@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Users, Microscope, Bug, CheckCircle, Bell,
   MessageSquare, Clock, Leaf, TrendingUp
@@ -12,8 +13,25 @@ const SevBadge = ({ sev }) => {
   return <span style={{ color: '#059669', background: '#ecfdf5', border: '1px solid #a7f3d0', padding: '4px 12px', borderRadius: '16px', fontSize: '12px', fontWeight: 500 }}>Low Risk</span>;
 };
 
-const StatCard = ({ icon: Icon, val, label, color }) => (
-  <div style={{ background: '#fff', borderRadius: '12px', padding: '20px', display: 'flex', alignItems: 'center', gap: '16px', border: '1px solid #e5e7eb', boxShadow: '0 1px 2px rgba(0,0,0,0.05)' }}>
+const StatCard = ({ icon: Icon, val, label, color, onClick }) => (
+  <div 
+    onClick={onClick}
+    style={{ 
+      background: '#fff', 
+      borderRadius: '12px', 
+      padding: '20px', 
+      display: 'flex', 
+      alignItems: 'center', 
+      gap: '16px', 
+      border: '1px solid #e5e7eb', 
+      boxShadow: '0 1px 2px rgba(0,0,0,0.05)',
+      cursor: onClick ? 'pointer' : 'default',
+      transition: 'all 0.2s ease',
+      transform: 'translateY(0)',
+    }}
+    onMouseEnter={(e) => { if(onClick) { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 4px 6px -1px rgba(0,0,0,0.1)'; } }}
+    onMouseLeave={(e) => { if(onClick) { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 1px 2px rgba(0,0,0,0.05)'; } }}
+  >
     <div style={{ width: '48px', height: '48px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: color === 'green' ? '#ecfdf5' : color === 'red' ? '#fef2f2' : color === 'blue' ? '#eff6ff' : color === 'amber' ? '#fffbeb' : color === 'teal' ? '#f0fdfa' : '#f3f4f6', color: color === 'green' ? '#059669' : color === 'red' ? '#dc2626' : color === 'blue' ? '#3b82f6' : color === 'amber' ? '#d97706' : color === 'teal' ? '#0d9488' : '#6b7280' }}>
       <Icon size={24} />
     </div>
@@ -28,6 +46,7 @@ export default function Dashboard() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     getDashboard()
@@ -71,12 +90,12 @@ export default function Dashboard() {
 
       {/* Stats */}
       <div className="responsive-stats-grid">
-        <StatCard icon={Users}         val={s.total_users}       label="Total Farmers"     color="green" />
-        <StatCard icon={Microscope}     val={s.total_scans}       label="Total Scans"       color="blue" />
-        <StatCard icon={Bug}            val={s.diseases_detected} label="Diseases Found"    color="red" />
-        <StatCard icon={CheckCircle}    val={s.healthy_plants}    label="Healthy Plants"    color="green" />
-        <StatCard icon={Bell}           val={s.total_alerts}      label="Alerts Sent"       color="amber" />
-        <StatCard icon={MessageSquare}  val={s.total_questions}   label="Questions"         color="teal" />
+        <StatCard icon={Users}         val={s.total_users}       label="Total Farmers"     color="green" onClick={() => navigate('/users')} />
+        <StatCard icon={Microscope}     val={s.total_scans}       label="Total Scans"       color="blue"  onClick={() => navigate('/scans')} />
+        <StatCard icon={Bug}            val={s.diseases_detected} label="Diseases Found"    color="red"   onClick={() => navigate('/scans')} />
+        <StatCard icon={CheckCircle}    val={s.healthy_plants}    label="Healthy Plants"    color="green" onClick={() => navigate('/scans')} />
+        <StatCard icon={Bell}           val={s.total_alerts}      label="Alerts Sent"       color="amber" onClick={() => navigate('/alerts')} />
+        <StatCard icon={MessageSquare}  val={s.total_questions}   label="Questions"         color="teal"  onClick={() => navigate('/expert-questions')} />
       </div>
 
       <div className="responsive-dash-grid">
