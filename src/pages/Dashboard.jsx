@@ -70,7 +70,7 @@ export default function Dashboard() {
       </div>
 
       {/* Stats */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px', marginBottom: '24px' }}>
+      <div className="responsive-stats-grid">
         <StatCard icon={Users}         val={s.total_users}       label="Total Farmers"     color="green" />
         <StatCard icon={Microscope}     val={s.total_scans}       label="Total Scans"       color="blue" />
         <StatCard icon={Bug}            val={s.diseases_detected} label="Diseases Found"    color="red" />
@@ -79,7 +79,7 @@ export default function Dashboard() {
         <StatCard icon={MessageSquare}  val={s.total_questions}   label="Questions"         color="teal" />
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '24px' }}>
+      <div className="responsive-dash-grid">
         {/* Recent Scans */}
         <div style={{ background: '#fff', borderRadius: '12px', border: '1px solid #e5e7eb', boxShadow: '0 1px 3px rgba(0,0,0,0.05)', overflow: 'hidden' }}>
           <div style={{ padding: '20px', borderBottom: '1px solid #e5e7eb', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>

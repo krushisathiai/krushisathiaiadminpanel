@@ -45,14 +45,14 @@ export default function ExpertQuestions() {
 
   return (
     <>
-      <div className="page-head" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+      <div className="responsive-page-head">
         <div>
           <h1 style={{ fontSize: '28px', color: '#111827', margin: 0 }}>Expert Q&A</h1>
           <p style={{ color: '#6b7280', fontSize: '14px', marginTop: '4px' }}>{pg.total_questions || 0} total questions</p>
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: selected ? '2fr 1fr' : '1fr', gap: '24px', alignItems: 'start' }}>
+      <div className={`responsive-expert-grid ${selected ? 'selected' : 'unselected'}`}>
         {/* Table */}
         <div className="card" style={{ background: '#fff', borderRadius: '12px', border: '1px solid #e5e7eb', boxShadow: '0 1px 3px rgba(0,0,0,0.05)', overflow: 'hidden' }}>
           

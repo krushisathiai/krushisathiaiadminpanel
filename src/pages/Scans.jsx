@@ -57,7 +57,7 @@ export default function Scans() {
 
   return (
     <>
-      <div className="page-head" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+      <div className="responsive-page-head">
         <div>
           <h1 style={{ fontSize: '28px', color: '#111827', margin: 0 }}>Plant Scans</h1>
           <p style={{ color: '#6b7280', fontSize: '14px', marginTop: '4px' }}>{pg.total_scans || 0} total scans recorded</p>
