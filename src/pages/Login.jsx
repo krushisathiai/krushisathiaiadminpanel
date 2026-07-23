@@ -38,7 +38,7 @@ export default function Login() {
         setError(result.message || 'Invalid credentials');
       }
     } catch (err) {
-      setError(err.response?.data?.message || 'Cannot connect to server. Start the backend on port 5000.');
+      setError(err.response?.data?.message || 'Cannot connect to server. Backend might be waking up, please wait a moment.');
     } finally {
       setLoading(false);
     }

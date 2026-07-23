@@ -27,7 +27,7 @@ export default function Dashboard() {
   useEffect(() => {
     getDashboard()
       .then(r => { if (r.data.success) setData(r.data); })
-      .catch(e => setErr(e.response?.data?.message || 'Backend offline — start server on port 5000'))
+      .catch(e => setErr(e.response?.data?.message || 'Connection timeout. Backend server might be waking up, please wait a few seconds and refresh.'))
       .finally(() => setLoading(false));
   }, []);
 
