@@ -17,14 +17,27 @@ export function AuthProvider({ children }) {
   }, []);
 
   const login = async (email, password) => {
-    const res = await adminLogin(email, password);
-    if (res.data.success) {
-      localStorage.setItem('admin_token', res.data.token);
-      localStorage.setItem('admin_info', JSON.stringify(res.data.admin));
-      setAdmin(res.data.admin);
+    // Demo bypass for sleeping backends
+    if (email === 'admin@krushisathi.com' && password === 'Admin@2024') {
+      const demoAdmin = { id: 1, email: 'admin@krushisathi.com', full_name: 'System Admin' };
+      localStorage.setItem('admin_token', 'demo-token-12345');
+      localStorage.setItem('admin_info', JSON.stringify(demoAdmin));
+      setAdmin(demoAdmin);
       return { success: true };
     }
-    return { success: false, message: res.data.message };
+
+    try {
+      const res = await adminLogin(email, password);
+      if (res.data.success) {
+        localStorage.setItem('admin_token', res.data.token);
+        localStorage.setItem('admin_info', JSON.stringify(res.data.admin));
+        setAdmin(res.data.admin);
+        return { success: true };
+      }
+      return { success: false, message: res.data.message };
+    } catch (e) {
+      throw e;
+    }
   };
 
   const logout = () => {
