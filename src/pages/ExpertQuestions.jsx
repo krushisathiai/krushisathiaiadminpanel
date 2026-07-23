@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { MessageSquare, Send, X, CheckCircle, Clock, Filter } from 'lucide-react';
+import { MessageSquare, Send, X, CheckCircle, Clock, Filter, Square, ChevronDown, CheckSquare } from 'lucide-react';
 import { getExpertQuestions, answerQuestion } from '../api/adminApi';
 import { useToast } from '../context/ToastContext';
 
@@ -39,149 +39,184 @@ export default function ExpertQuestions() {
     finally { setSaving(false); }
   };
 
-  const fmtDate = (d) => d ? new Date(d).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : '—';
+  const fmtDate = (d) => d ? new Date(d).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : '—';
 
-  const STATUS_TABS = [
-    { val: '', label: 'All', icon: Filter },
-    { val: 'pending', label: 'Pending', icon: Clock },
-    { val: 'answered', label: 'Answered', icon: CheckCircle },
-  ];
+  const avatarColors = ['#10b981', '#f59e0b', '#8b5cf6', '#3b82f6', '#14b8a6'];
 
   return (
     <>
-      <div className="page-head">
+      <div className="page-head" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
         <div>
-          <h1>Expert Q&A</h1>
-          <p>{pg.total_questions || 0} total questions</p>
-        </div>
-        <div className="flex items-center gap-2">
-          {STATUS_TABS.map(({ val, label, icon: Icon }) => (
-            <button
-              key={val}
-              className={`btn btn-sm ${status === val ? 'btn-primary' : 'btn-ghost'}`}
-              onClick={() => { setStatus(val); setPage(1); }}
-            >
-              <Icon size={13} /> {label}
-            </button>
-          ))}
+          <h1 style={{ fontSize: '28px', color: '#111827', margin: 0 }}>Expert Q&A</h1>
+          <p style={{ color: '#6b7280', fontSize: '14px', marginTop: '4px' }}>{pg.total_questions || 0} total questions</p>
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: selected ? '1fr 380px' : '1fr', gap: 16 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: selected ? '2fr 1fr' : '1fr', gap: '24px', alignItems: 'start' }}>
         {/* Table */}
-        <div className="card">
+        <div className="card" style={{ background: '#fff', borderRadius: '12px', border: '1px solid #e5e7eb', boxShadow: '0 1px 3px rgba(0,0,0,0.05)', overflow: 'hidden' }}>
+          
+          <div className="tbl-toolbar" style={{ padding: '16px 20px', borderBottom: '1px solid #e5e7eb', display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'center', background: '#fff' }}>
+            <div style={{ flex: 1, color: '#111827', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <MessageSquare size={18} color="#059669" /> Farmer Questions
+            </div>
+            
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <button
+                onClick={() => { setStatus(''); setPage(1); }}
+                style={{ padding: '8px 16px', borderRadius: '8px', border: '1px solid #d1d5db', background: status === '' ? '#f3f4f6' : '#fff', color: '#374151', fontSize: '13px', fontWeight: 500, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}
+              >
+                <Filter size={14} /> All
+              </button>
+              <button
+                onClick={() => { setStatus('pending'); setPage(1); }}
+                style={{ padding: '8px 16px', borderRadius: '8px', border: '1px solid #fde68a', background: status === 'pending' ? '#fffbeb' : '#fff', color: status === 'pending' ? '#d97706' : '#374151', fontSize: '13px', fontWeight: 500, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}
+              >
+                <Clock size={14} /> Pending
+              </button>
+              <button
+                onClick={() => { setStatus('answered'); setPage(1); }}
+                style={{ padding: '8px 16px', borderRadius: '8px', border: '1px solid #a7f3d0', background: status === 'answered' ? '#ecfdf5' : '#fff', color: status === 'answered' ? '#059669' : '#374151', fontSize: '13px', fontWeight: 500, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}
+              >
+                <CheckCircle size={14} /> Answered
+              </button>
+            </div>
+          </div>
+
           {loading ? (
-            <div className="spin-wrap"><div className="spinner" /><span>Loading...</span></div>
+            <div className="spin-wrap" style={{ padding: '40px', textAlign: 'center' }}><div className="spinner" style={{ margin: '0 auto' }} /></div>
           ) : questions.length === 0 ? (
-            <div className="empty">
-              <MessageSquare />
+            <div className="empty" style={{ padding: '60px 20px', textAlign: 'center', color: '#6b7280' }}>
+              <MessageSquare size={48} style={{ margin: '0 auto 16px', opacity: 0.5 }} />
               <h3>No Questions</h3>
               <p>{status === 'pending' ? 'No pending questions' : status === 'answered' ? 'All answered!' : 'No questions yet'}</p>
             </div>
           ) : (
-            <div className="tbl-wrap">
-              <table>
+            <div className="tbl-wrap" style={{ overflowX: 'auto' }}>
+              <table style={{ width: '100%', minWidth: '700px', borderCollapse: 'collapse' }}>
                 <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>Farmer</th>
-                    <th>Question</th>
-                    <th>Status</th>
-                    <th>Asked</th>
-                    <th>Action</th>
+                  <tr style={{ borderBottom: '1px solid #e5e7eb', background: '#fff' }}>
+                    <th style={{ padding: '16px', color: '#6b7280', fontSize: '12px', fontWeight: 600, width: '40px', textAlign: 'center' }}><Square size={16} color="#d1d5db" /></th>
+                    <th style={{ padding: '16px', color: '#6b7280', fontSize: '12px', fontWeight: 600, width: '40px' }}>#</th>
+                    <th style={{ padding: '16px', color: '#6b7280', fontSize: '12px', fontWeight: 600, textAlign: 'left' }}>FARMER</th>
+                    <th style={{ padding: '16px', color: '#6b7280', fontSize: '12px', fontWeight: 600, textAlign: 'left' }}>QUESTION</th>
+                    <th style={{ padding: '16px', color: '#6b7280', fontSize: '12px', fontWeight: 600, textAlign: 'left' }}>STATUS</th>
+                    <th style={{ padding: '16px', color: '#6b7280', fontSize: '12px', fontWeight: 600, textAlign: 'left' }}>ASKED</th>
+                    <th style={{ padding: '16px', color: '#6b7280', fontSize: '12px', fontWeight: 600, textAlign: 'center' }}>ACTION</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {questions.map((q, i) => (
-                    <tr key={q.id} style={{ background: selected?.id === q.id ? 'rgba(34,197,94,.06)' : '' }}>
-                      <td className="tc-5 fs-12">{(page - 1) * 10 + i + 1}</td>
-                      <td>
-                        <div className="flex items-center gap-2">
-                          <div className="avatar">{q.user_name?.[0]}</div>
-                          <div>
-                            <div className="fw-600 tc-1 fs-13">{q.user_name}</div>
-                            <div className="tc-5 fs-12">{q.user_mobile}</div>
+                  {questions.map((q, i) => {
+                    const num = (page - 1) * 10 + i + 1;
+                    const initials = q.user_name?.substring(0,1).toUpperCase() || 'U';
+                    const avatarColor = avatarColors[i % avatarColors.length];
+                    const isSelected = selected?.id === q.id;
+                    
+                    return (
+                      <tr key={q.id} style={{ borderBottom: '1px solid #f3f4f6', background: isSelected ? '#f8fafc' : '#fff', cursor: 'pointer', transition: 'background 0.2s' }} onClick={() => setSelected(q)} onMouseEnter={e => !isSelected && (e.currentTarget.style.background = '#f9fafb')} onMouseLeave={e => !isSelected && (e.currentTarget.style.background = '#fff')}>
+                        <td style={{ padding: '16px', textAlign: 'center' }}><Square size={16} color="#d1d5db" /></td>
+                        <td style={{ padding: '16px', color: '#6b7280', fontSize: '14px', fontWeight: 500 }}>{num}</td>
+                        <td style={{ padding: '16px' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                            <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: avatarColor, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 600, fontSize: '12px' }}>
+                              {initials}
+                            </div>
+                            <div style={{ color: '#111827', fontWeight: 500, fontSize: '14px' }}>{q.user_name || 'Unknown'}</div>
                           </div>
-                        </div>
-                      </td>
-                      <td style={{ maxWidth: 280 }}>
-                        <div className="fw-600 tc-1 fs-13" style={{ marginBottom: 3 }}>{q.question}</div>
-                        {q.answer && (
-                          <div className="tc-5 fs-12">
-                            <CheckCircle size={11} style={{ display: 'inline', marginRight: 3, color: 'var(--green-500)' }} />
-                            Answered by {q.answered_by}
-                          </div>
-                        )}
-                      </td>
-                      <td>
-                        {q.answer
-                          ? <span className="badge b-green"><CheckCircle size={11} /> Answered</span>
-                          : <span className="badge b-amber"><Clock size={11} /> Pending</span>
-                        }
-                      </td>
-                      <td className="tc-5 fs-12">{fmtDate(q.created_at)}</td>
-                      <td>
-                        <button
-                          className={`btn btn-sm ${selected?.id === q.id ? 'btn-primary' : 'btn-ghost'}`}
-                          onClick={() => { setSelected(q); setAnswer(q.answer || ''); }}
-                        >
-                          <MessageSquare size={13} />
-                          {q.answer ? 'Edit' : 'Answer'}
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
+                        </td>
+                        <td style={{ padding: '16px', color: '#4b5563', fontSize: '13px', maxWidth: '250px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                          {q.question}
+                        </td>
+                        <td style={{ padding: '16px' }}>
+                          {!q.answer ? (
+                            <span style={{ color: '#d97706', background: '#fffbeb', border: '1px solid #fde68a', padding: '4px 12px', borderRadius: '16px', fontSize: '12px', fontWeight: 500 }}>Pending</span>
+                          ) : (
+                            <span style={{ color: '#059669', background: '#ecfdf5', border: '1px solid #a7f3d0', padding: '4px 12px', borderRadius: '16px', fontSize: '12px', fontWeight: 500 }}>Answered</span>
+                          )}
+                        </td>
+                        <td style={{ padding: '16px', color: '#6b7280', fontSize: '13px' }}>{fmtDate(q.created_at)}</td>
+                        <td style={{ padding: '16px', textAlign: 'center' }}>
+                          <button style={{ padding: '6px 12px', background: isSelected ? '#3b82f6' : '#f3f4f6', color: isSelected ? '#fff' : '#374151', border: 'none', borderRadius: '6px', fontSize: '12px', fontWeight: 500, cursor: 'pointer' }}>
+                            {q.answer ? 'View' : 'Reply'}
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
           )}
-          {pg.total_pages > 1 && (
-            <div className="tbl-footer">
-              <span className="pg-info">Page {pg.current_page} of {pg.total_pages}</span>
-              <div className="pagination">
-                <button className="pg-btn" onClick={() => setPage(p => p - 1)} disabled={page === 1}>‹</button>
-                <button className="pg-btn" onClick={() => setPage(p => p + 1)} disabled={page === pg.total_pages}>›</button>
+
+          {/* Pagination */}
+          {!loading && questions.length > 0 && pg.total_pages > 1 && (
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 20px', borderTop: '1px solid #e5e7eb', background: '#fff', flexWrap: 'wrap', gap: '16px' }}>
+              <div style={{ color: '#6b7280', fontSize: '14px' }}>
+                Page {pg.current_page} of {pg.total_pages}
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #e5e7eb', background: '#fff', borderRadius: '6px', color: page === 1 ? '#d1d5db' : '#374151', cursor: page === 1 ? 'not-allowed' : 'pointer' }}>{'<'}</button>
+                <button style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', background: '#059669', color: '#fff', borderRadius: '6px', fontWeight: 500 }}>{page}</button>
+                <button onClick={() => setPage(p => Math.min(pg.total_pages, p + 1))} disabled={page === pg.total_pages} style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #e5e7eb', background: '#fff', borderRadius: '6px', color: page === pg.total_pages ? '#d1d5db' : '#374151', cursor: page === pg.total_pages ? 'not-allowed' : 'pointer' }}>{'>'}</button>
               </div>
             </div>
           )}
         </div>
 
-        {/* Answer Panel */}
+        {/* Reply Panel */}
         {selected && (
-          <div className="answer-panel">
-            <div className="answer-panel-head">
-              <h3><Send size={16} /> Answer Question</h3>
-              <button
-                className="modal-close"
-                onClick={() => { setSelected(null); setAnswer(''); }}
-              >
-                <X size={14} />
-              </button>
+          <div style={{ background: '#fff', borderRadius: '12px', border: '1px solid #e5e7eb', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)', overflow: 'hidden', position: 'sticky', top: '24px' }}>
+            <div style={{ padding: '16px 20px', borderBottom: '1px solid #e5e7eb', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#f8fafc' }}>
+              <div style={{ fontWeight: 600, color: '#111827', fontSize: '15px' }}>{selected.answer ? 'View Answer' : 'Reply to Farmer'}</div>
+              <button onClick={() => { setSelected(null); setAnswer(''); }} style={{ background: 'none', border: 'none', color: '#9ca3af', cursor: 'pointer' }}><X size={18} /></button>
             </div>
-            <div className="answer-panel-body">
-              <div className="question-bubble">
-                <div className="question-bubble-label">Question from {selected.user_name}</div>
+            
+            <div style={{ padding: '20px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
+                <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: '#e0e7ff', color: '#4f46e5', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 600 }}>
+                  {selected.user_name?.[0]?.toUpperCase() || 'U'}
+                </div>
+                <div>
+                  <div style={{ color: '#111827', fontWeight: 600, fontSize: '14px' }}>{selected.user_name}</div>
+                  <div style={{ color: '#6b7280', fontSize: '12px' }}>{fmtDate(selected.created_at)}</div>
+                </div>
+              </div>
+              
+              <div style={{ padding: '12px 16px', background: '#f3f4f6', borderRadius: '8px', color: '#374151', fontSize: '14px', lineHeight: '1.5', marginBottom: '24px', borderLeft: '4px solid #9ca3af' }}>
                 {selected.question}
               </div>
-              <form onSubmit={handleAnswer} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                <div className="form-group">
-                  <label className="form-label">Your Expert Answer</label>
+
+              {selected.answer ? (
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
+                    <div style={{ width: '24px', height: '24px', borderRadius: '50%', background: '#10b981', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><CheckSquare size={12} /></div>
+                    <div style={{ color: '#059669', fontWeight: 600, fontSize: '13px' }}>Answered by {selected.answered_by}</div>
+                  </div>
+                  <div style={{ padding: '12px 16px', background: '#ecfdf5', borderRadius: '8px', color: '#065f46', fontSize: '14px', lineHeight: '1.5', border: '1px solid #a7f3d0' }}>
+                    {selected.answer}
+                  </div>
+                </div>
+              ) : (
+                <form onSubmit={handleAnswer}>
+                  <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#374151', marginBottom: '8px' }}>Your Answer</label>
                   <textarea
-                    className="textarea"
-                    placeholder="Write a detailed, helpful answer for the farmer..."
+                    rows={5}
                     value={answer}
                     onChange={e => setAnswer(e.target.value)}
+                    placeholder="Type your expert advice here..."
+                    style={{ width: '100%', padding: '12px', border: '1px solid #d1d5db', borderRadius: '8px', fontSize: '14px', outline: 'none', resize: 'vertical', marginBottom: '16px', fontFamily: 'inherit' }}
                     required
-                    style={{ minHeight: 180 }}
                   />
-                </div>
-                <div className="flex gap-2">
-                  <button type="button" className="btn btn-ghost btn-sm" onClick={() => { setSelected(null); setAnswer(''); }}>Cancel</button>
-                  <button type="submit" className="btn btn-primary btn-sm" disabled={saving || !answer.trim()}>
-                    {saving ? 'Saving...' : <><Send size={13} /> Submit Answer</>}
+                  <button 
+                    type="submit" 
+                    disabled={saving}
+                    style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '10px 16px', background: '#059669', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: 600, fontSize: '14px', cursor: 'pointer', opacity: saving ? 0.7 : 1 }}
+                  >
+                    <Send size={16} />
+                    {saving ? 'Sending...' : 'Send Answer'}
                   </button>
-                </div>
-              </form>
+                </form>
+              )}
             </div>
           </div>
         )}
