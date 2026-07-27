@@ -49,12 +49,12 @@ export default function Users() {
 
   const fmtDate = (d) => d ? new Date(d).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : '—';
 
-  // Mock stats based on the image
+  // Stats using real data where available, otherwise placeholders
   const stats = [
-    { label: 'Total Users', val: '1,245', sub: '+12 this week', icon: UsersIcon, color: 'green' },
-    { label: 'Active Today', val: '235', sub: '+8 today', icon: CheckSquare, color: 'green' },
-    { label: 'Total Scans', val: '8,541', sub: '+234 this week', icon: Leaf, color: 'purple' },
-    { label: 'Pending Requests', val: '42', sub: '+5 new', icon: Calendar, color: 'orange' },
+    { label: 'Total Users', val: pg.total_users || 0, sub: 'Registered farmers', icon: UsersIcon, color: 'green' },
+    { label: 'Active Today', val: '—', sub: 'Active sessions', icon: CheckSquare, color: 'green' },
+    { label: 'Total Scans', val: '—', sub: 'Across all users', icon: Leaf, color: 'purple' },
+    { label: 'Pending Requests', val: '—', sub: 'Awaiting review', icon: Calendar, color: 'orange' },
   ];
 
   return (
@@ -148,9 +148,8 @@ export default function Users() {
               <tbody>
                 {users.map((u, i) => {
                   const num = (page - 1) * 10 + i + 1;
-                  // For demo, randomize status/scans if not present
-                  const status = i % 3 === 0 ? 'Pending' : i % 5 === 0 ? 'Blocked' : 'Active';
-                  const scansCount = (i * 7 + 3) % 25 + 1;
+                  const status = u.is_verified ? 'Active' : 'Pending';
+                  const scansCount = u.scan_count || 0;
                   const initials = u.full_name?.substring(0,1).toUpperCase() || 'U';
                   const avatarColors = ['#10b981', '#f59e0b', '#8b5cf6', '#3b82f6', '#14b8a6'];
                   const avatarColor = avatarColors[i % avatarColors.length];

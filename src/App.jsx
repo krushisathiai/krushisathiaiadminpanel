@@ -11,6 +11,7 @@ import Scans from './pages/Scans';
 import Alerts from './pages/Alerts';
 import ExpertQuestions from './pages/ExpertQuestions';
 import PrivacyPolicy from './pages/PrivacyPolicy';
+import Diseases from './pages/Diseases';
 
 function ProtectedLayout() {
   const { admin, loading } = useAuth();
@@ -48,6 +49,7 @@ function ProtectedLayout() {
             <Route path="/scans" element={<Scans />} />
             <Route path="/alerts" element={<Alerts />} />
             <Route path="/expert-questions" element={<ExpertQuestions />} />
+            <Route path="/diseases" element={<Diseases />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </div>

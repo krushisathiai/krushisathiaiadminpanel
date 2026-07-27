@@ -10,6 +10,7 @@ const NAV = [
   { to: '/', icon: LayoutDashboard, label: 'Dashboard', tip: 'Dashboard' },
   { to: '/users', icon: Users, label: 'Users', tip: 'Users' },
   { to: '/scans', icon: Leaf, label: 'Plant Scans', tip: 'Scans' },
+  { to: '/diseases', icon: Leaf, label: 'Crop Diseases', tip: 'Diseases' },
   { to: '/alerts', icon: Bell, label: 'Alerts', tip: 'Alerts' },
   { to: '/expert-questions', icon: MessageSquare, label: 'Expert Q&A', tip: 'Expert Q&A' },
   { to: '/privacy-policy', icon: Shield, label: 'Privacy Policy', tip: 'Privacy' },

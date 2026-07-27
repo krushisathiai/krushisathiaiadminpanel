@@ -53,4 +53,10 @@ export const deleteAlert = (id) => api.delete(`/api/admin/alerts/${id}`);
 export const getExpertQuestions = (params) => api.get('/api/admin/expert-questions', { params });
 export const answerQuestion = (id, data) => api.put(`/api/admin/expert-questions/${id}/answer`, data);
 
+// ─── DISEASES ─────────────────────────────────────────────────────────────────
+export const getDiseases = (params) => api.get('/api/diseases', { params });
+export const createDisease = (data) => api.post('/api/admin/diseases', data);
+export const updateDisease = (id, data) => api.put(`/api/admin/diseases/${id}`, data);
+export const deleteDisease = (id) => api.delete(`/api/admin/diseases/${id}`);
+
 export default api;
