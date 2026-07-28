@@ -41,19 +41,17 @@ export default function Topbar({ setMobileOpen }) {
 
       {/* Right */}
       <div className="topbar-right">
-
-        
-        <div style={{ position: 'relative', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '36px', height: '36px', borderRadius: '50%', background: '#f3f4f6' }}>
-          <Bell size={18} color="#4b5563" />
-          <span style={{ position: 'absolute', top: '-2px', right: '-2px', background: '#ef4444', color: '#fff', fontSize: '10px', fontWeight: 'bold', width: '16px', height: '16px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid #fff' }}>3</span>
+        <div className="topbar-icon-btn">
+          <Bell size={18} />
+          <span className="topbar-badge">3</span>
         </div>
         
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', paddingLeft: '8px', borderLeft: '1px solid #e5e7eb' }}>
-          <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: '#059669', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '14px' }}>
+        <div className="topbar-user">
+          <div className="topbar-avatar">
             {initials}
           </div>
-          <span style={{ fontSize: '14px', color: '#374151', fontWeight: 500 }}>Admin</span>
-          <ChevronDown size={14} color="#9ca3af" />
+          <span className="topbar-username">{admin?.name || 'Admin'}</span>
+          <ChevronDown size={14} color="var(--text-muted)" />
         </div>
       </div>
     </div>
