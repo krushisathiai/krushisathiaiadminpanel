@@ -87,7 +87,7 @@ export default function Users() {
       </div>
 
       {/* Stats Cards */}
-      <div className="stat-cards-row" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px', marginBottom: '24px' }}>
+      <div className="stat-cards-row" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px', marginBottom: '24px' }}>
         {stats.map((s, i) => (
           <div key={i} className="stat-card-white" style={{ background: '#fff', borderRadius: '12px', padding: '20px', display: 'flex', alignItems: 'center', gap: '16px', border: '1px solid #e5e7eb', boxShadow: '0 1px 2px rgba(0,0,0,0.05)' }}>
             <div className={`stat-icon-${s.color}`} style={{ width: '48px', height: '48px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: s.color === 'green' ? '#ecfdf5' : s.color === 'purple' ? '#f3e8ff' : '#fff7ed', color: s.color === 'green' ? '#059669' : s.color === 'purple' ? '#9333ea' : '#ea580c' }}>
