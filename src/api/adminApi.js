@@ -61,11 +61,6 @@ export const createDisease = (data) => api.post('/api/admin/diseases', data);
 export const updateDisease = (id, data) => api.put(`/api/admin/diseases/${id}`, data);
 export const deleteDisease = (id) => api.delete(`/api/admin/diseases/${id}`);
 
-// ─── UREA REQUESTS ────────────────────────────────────────────────────────────
-export const getUreaRequests = (params) => api.get('/api/admin/urea-requests', { params });
-export const updateUreaStatus = (id, status) => api.put(`/api/admin/urea-requests/${id}/status`, { status });
-export const deleteUreaRequest = (id) => api.delete(`/api/admin/urea-requests/${id}`);
-
 // ─── SHOP PRODUCTS ────────────────────────────────────────────────────────────
 export const getShopProducts = () => api.get('/api/admin/shop-products');
 export const deleteShopProduct = (id) => api.delete(`/api/admin/shop-products/${id}`);

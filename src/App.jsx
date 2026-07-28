@@ -12,7 +12,6 @@ import Alerts from './pages/Alerts';
 import ExpertQuestions from './pages/ExpertQuestions';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import Diseases from './pages/Diseases';
-import UreaRequests from './pages/UreaRequests';
 import ShopProducts from './pages/ShopProducts';
 
 function ProtectedLayout() {
@@ -50,7 +49,6 @@ function ProtectedLayout() {
             <Route path="/users" element={<Users />} />
             <Route path="/scans" element={<Scans />} />
             <Route path="/diseases" element={<Diseases />} />
-            <Route path="/urea-requests" element={<UreaRequests />} />
             <Route path="/shop-products" element={<ShopProducts />} />
             <Route path="/alerts" element={<Alerts />} />
             <Route path="/expert-questions" element={<ExpertQuestions />} />

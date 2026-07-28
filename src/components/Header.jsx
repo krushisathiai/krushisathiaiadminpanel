@@ -7,7 +7,6 @@ const BREADCRUMBS = {
   '/users': 'Users',
   '/scans': 'Plant Scans',
   '/diseases': 'Crop Diseases',
-  '/urea-requests': 'Urea Allocation Requests',
   '/shop-products': 'Shop Listings',
   '/alerts': 'Alerts',
   '/expert-questions': 'Expert Q&A',

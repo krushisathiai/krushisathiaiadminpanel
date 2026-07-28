@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, Users, Leaf, Bell, MessageSquare,
-  Shield, ChevronLeft, LogOut, Menu, X, Package, ShoppingBag
+  Shield, ChevronLeft, LogOut, Menu, X, ShoppingBag
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
@@ -11,7 +11,6 @@ const NAV = [
   { to: '/users', icon: Users, label: 'Users', tip: 'Users' },
   { to: '/scans', icon: Leaf, label: 'Plant Scans', tip: 'Scans' },
   { to: '/diseases', icon: Leaf, label: 'Crop Diseases', tip: 'Diseases' },
-  { to: '/urea-requests', icon: Package, label: 'Urea Requests', tip: 'Urea Quota' },
   { to: '/shop-products', icon: ShoppingBag, label: 'Shop Listings', tip: 'Shop Products' },
   { to: '/alerts', icon: Bell, label: 'Alerts', tip: 'Alerts' },
   { to: '/expert-questions', icon: MessageSquare, label: 'Expert Q&A', tip: 'Expert Q&A' },
