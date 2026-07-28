@@ -354,6 +354,9 @@ html, body, #root {
 .page {
   flex: 1;
   overflow-y: auto;
+  overflow-x: hidden;
+  max-width: 100%;
+  width: 100%;
   padding: 32px;
   background: #f8f9fa;
   
@@ -1335,6 +1338,20 @@ tbody tr:hover td {
   flex-shrink: 0;
 }
 .mob-menu-btn svg { width: 20px; height: 20px; }
+
+.sb-close-btn {
+  display: none;
+  align-items: center; justify-content: center;
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.1);
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+}
+@media (max-width: 992px) {
+  .sb-close-btn { display: flex; }
+}
 
 /* ─── ANIMATIONS ─── */
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }

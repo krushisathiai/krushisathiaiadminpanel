@@ -53,7 +53,7 @@ export default function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobile
           <button
             onClick={() => setMobileOpen(false)}
             style={{ marginLeft: 'auto', background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', padding: 4 }}
-            className="mob-menu-btn"
+            className="sb-close-btn"
             id="sidebar-close-btn"
           >
             <X size={18} />
