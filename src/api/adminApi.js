@@ -40,6 +40,7 @@ export const getDashboard = () => api.get('/api/admin/dashboard');
 
 // ─── USERS ────────────────────────────────────────────────────────────────────
 export const getUsers = (params) => api.get('/api/admin/users', { params });
+export const updateUserRole = (id, role) => api.put(`/api/admin/users/${id}/role`, { role });
 export const deleteUser = (id) => api.delete(`/api/admin/users/${id}`);
 
 // ─── SCANS ────────────────────────────────────────────────────────────────────
@@ -54,12 +55,19 @@ export const deleteAlert = (id) => api.delete(`/api/admin/alerts/${id}`);
 // ─── EXPERT QUESTIONS ─────────────────────────────────────────────────────────
 export const getExpertQuestions = (params) => api.get('/api/admin/expert-questions', { params });
 export const answerQuestion = (id, data) => api.put(`/api/admin/expert-questions/${id}/answer`, data);
+export const deleteExpertQuestion = (id) => api.delete(`/api/admin/expert-questions/${id}`);
 
 // ─── DISEASES ─────────────────────────────────────────────────────────────────
 export const getDiseases = (params) => api.get('/api/diseases', { params });
 export const createDisease = (data) => api.post('/api/admin/diseases', data);
 export const updateDisease = (id, data) => api.put(`/api/admin/diseases/${id}`, data);
 export const deleteDisease = (id) => api.delete(`/api/admin/diseases/${id}`);
+
+// ─── FERTILIZERS ──────────────────────────────────────────────────────────────
+export const getFertilizers = () => api.get('/api/admin/fertilizers');
+export const createFertilizer = (data) => api.post('/api/admin/fertilizers', data);
+export const updateFertilizer = (id, data) => api.put(`/api/admin/fertilizers/${id}`, data);
+export const deleteFertilizer = (id) => api.delete(`/api/admin/fertilizers/${id}`);
 
 // ─── SHOP PRODUCTS ────────────────────────────────────────────────────────────
 export const getShopProducts = () => api.get('/api/admin/shop-products');

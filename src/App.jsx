@@ -12,6 +12,7 @@ import Alerts from './pages/Alerts';
 import ExpertQuestions from './pages/ExpertQuestions';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import Diseases from './pages/Diseases';
+import Fertilizers from './pages/Fertilizers';
 import ShopProducts from './pages/ShopProducts';
 
 function ProtectedLayout() {
@@ -49,6 +50,7 @@ function ProtectedLayout() {
             <Route path="/users" element={<Users />} />
             <Route path="/scans" element={<Scans />} />
             <Route path="/diseases" element={<Diseases />} />
+            <Route path="/fertilizers" element={<Fertilizers />} />
             <Route path="/shop-products" element={<ShopProducts />} />
             <Route path="/alerts" element={<Alerts />} />
             <Route path="/expert-questions" element={<ExpertQuestions />} />

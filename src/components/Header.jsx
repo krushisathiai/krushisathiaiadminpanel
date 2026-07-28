@@ -7,6 +7,7 @@ const BREADCRUMBS = {
   '/users': 'Users',
   '/scans': 'Plant Scans',
   '/diseases': 'Crop Diseases',
+  '/fertilizers': 'Fertilizer Guide Management',
   '/shop-products': 'Shop Listings',
   '/alerts': 'Alerts',
   '/expert-questions': 'Expert Q&A',

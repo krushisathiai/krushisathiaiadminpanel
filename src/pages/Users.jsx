@@ -3,7 +3,7 @@ import {
   Search, Trash2, Users as UsersIcon, X, Plus, Download, 
   MapPin, Phone, Leaf, Calendar, Eye, Edit, Filter, ChevronDown, CheckSquare, Square
 } from 'lucide-react';
-import { getUsers, deleteUser } from '../api/adminApi';
+import { getUsers, deleteUser, updateUserRole } from '../api/adminApi';
 import { useToast } from '../context/ToastContext';
 import ConfirmModal from '../components/ConfirmModal';
 
@@ -45,6 +45,18 @@ export default function Users() {
       fetchUsers();
     } catch (e) { addToast(e.response?.data?.message || 'Delete failed', 'err'); }
     finally { setDeleting(null); }
+  };
+
+  const handleRoleChange = async (id, newRole) => {
+    try {
+      const res = await updateUserRole(id, newRole);
+      if (res.data.success) {
+        addToast(`User role updated to ${newRole}`, 'ok');
+        fetchUsers();
+      }
+    } catch (e) {
+      addToast(e.response?.data?.message || 'Failed to update user role', 'err');
+    }
   };
 
   const fmtDate = (d) => d ? new Date(d).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : '—';
@@ -135,10 +147,11 @@ export default function Users() {
                 <tr style={{ borderBottom: '1px solid #e5e7eb', background: '#fff' }}>
                   <th style={{ padding: '16px', color: '#6b7280', fontSize: '12px', fontWeight: 600, width: '40px', textAlign: 'center' }}><Square size={16} color="#d1d5db" /></th>
                   <th style={{ padding: '16px', color: '#6b7280', fontSize: '12px', fontWeight: 600, width: '40px' }}>#</th>
-                  <th style={{ padding: '16px', color: '#6b7280', fontSize: '12px', fontWeight: 600, textAlign: 'left' }}>FARMER</th>
+                  <th style={{ padding: '16px', color: '#6b7280', fontSize: '12px', fontWeight: 600, textAlign: 'left' }}>USER</th>
+                  <th style={{ padding: '16px', color: '#6b7280', fontSize: '12px', fontWeight: 600, textAlign: 'left' }}>ROLE</th>
                   <th style={{ padding: '16px', color: '#6b7280', fontSize: '12px', fontWeight: 600, textAlign: 'left' }}>MOBILE</th>
-                  <th style={{ padding: '16px', color: '#6b7280', fontSize: '12px', fontWeight: 600, textAlign: 'left' }}>VILLAGE</th>
-                  <th style={{ padding: '16px', color: '#6b7280', fontSize: '12px', fontWeight: 600, textAlign: 'left' }}>CROP</th>
+                  <th style={{ padding: '16px', color: '#6b7280', fontSize: '12px', fontWeight: 600, textAlign: 'left' }}>LOCATION</th>
+                  <th style={{ padding: '16px', color: '#6b7280', fontSize: '12px', fontWeight: 600, textAlign: 'left' }}>MAIN CROP</th>
                   <th style={{ padding: '16px', color: '#6b7280', fontSize: '12px', fontWeight: 600, textAlign: 'left' }}>SCANS</th>
                   <th style={{ padding: '16px', color: '#6b7280', fontSize: '12px', fontWeight: 600, textAlign: 'left' }}>STATUS</th>
                   <th style={{ padding: '16px', color: '#6b7280', fontSize: '12px', fontWeight: 600, textAlign: 'left' }}>JOINED</th>
@@ -165,9 +178,29 @@ export default function Users() {
                           </div>
                           <div>
                             <div style={{ color: '#111827', fontWeight: 500, fontSize: '14px' }}>{u.full_name || 'Unknown'}</div>
-                            <div style={{ color: '#9ca3af', fontSize: '12px' }}>ID #{u.id}</div>
+                            <div style={{ color: '#9ca3af', fontSize: '12px' }}>{u.email || `ID #${u.id}`}</div>
                           </div>
                         </div>
+                      </td>
+                      <td style={{ padding: '16px' }}>
+                        <select
+                          value={u.role || 'user'}
+                          onChange={e => handleRoleChange(u.id, e.target.value)}
+                          style={{
+                            padding: '4px 8px',
+                            borderRadius: '8px',
+                            fontSize: '12px',
+                            fontWeight: 600,
+                            border: '1px solid #d1d5db',
+                            background: u.role === 'admin' ? '#fef2f2' : u.role === 'shop_owner' ? '#eff6ff' : '#f0fdf4',
+                            color: u.role === 'admin' ? '#ef4444' : u.role === 'shop_owner' ? '#3b82f6' : '#16a34a',
+                            cursor: 'pointer'
+                          }}
+                        >
+                          <option value="user">🌾 Farmer</option>
+                          <option value="shop_owner">🛍️ Shop Owner</option>
+                          <option value="admin">👑 Admin</option>
+                        </select>
                       </td>
                       <td style={{ padding: '16px', color: '#4b5563', fontSize: '14px' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>

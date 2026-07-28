@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
-import { MessageSquare, Send, X, CheckCircle, Clock, Filter, Square, ChevronDown, CheckSquare } from 'lucide-react';
-import { getExpertQuestions, answerQuestion } from '../api/adminApi';
+import { MessageSquare, Send, X, CheckCircle, Clock, Filter, Square, ChevronDown, CheckSquare, Trash2 } from 'lucide-react';
+import { getExpertQuestions, answerQuestion, deleteExpertQuestion } from '../api/adminApi';
 import { useToast } from '../context/ToastContext';
 
 export default function ExpertQuestions() {
@@ -37,6 +37,20 @@ export default function ExpertQuestions() {
       fetchQs();
     } catch (e) { addToast(e.response?.data?.message || 'Failed', 'err'); }
     finally { setSaving(false); }
+  };
+
+  const handleDeleteQuestion = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this question?')) return;
+    try {
+      const res = await deleteExpertQuestion(id);
+      if (res.data.success) {
+        addToast('Question deleted successfully', 'ok');
+        if (selected?.id === id) setSelected(null);
+        fetchQs();
+      }
+    } catch (e) {
+      addToast('Failed to delete question', 'err');
+    }
   };
 
   const fmtDate = (d) => d ? new Date(d).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : '—';
@@ -136,9 +150,18 @@ export default function ExpertQuestions() {
                         </td>
                         <td style={{ padding: '16px', color: '#6b7280', fontSize: '13px' }}>{fmtDate(q.created_at)}</td>
                         <td style={{ padding: '16px', textAlign: 'center' }}>
-                          <button style={{ padding: '6px 12px', background: isSelected ? '#3b82f6' : '#f3f4f6', color: isSelected ? '#fff' : '#374151', border: 'none', borderRadius: '6px', fontSize: '12px', fontWeight: 500, cursor: 'pointer' }}>
-                            {q.answer ? 'View' : 'Reply'}
-                          </button>
+                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                            <button style={{ padding: '6px 12px', background: isSelected ? '#3b82f6' : '#f3f4f6', color: isSelected ? '#fff' : '#374151', border: 'none', borderRadius: '6px', fontSize: '12px', fontWeight: 500, cursor: 'pointer' }}>
+                              {q.answer ? 'View' : 'Reply'}
+                            </button>
+                            <button
+                              onClick={(e) => { e.stopPropagation(); handleDeleteQuestion(q.id); }}
+                              style={{ padding: '6px 8px', background: '#fef2f2', color: '#ef4444', border: 'none', borderRadius: '6px', cursor: 'pointer' }}
+                              title="Delete Question"
+                            >
+                              <Trash2 size={14} />
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     );
