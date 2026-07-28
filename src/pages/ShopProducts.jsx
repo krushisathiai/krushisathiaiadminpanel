@@ -56,104 +56,107 @@ export default function ShopProducts() {
   });
 
   return (
-    <>
-      <div className="responsive-page-head">
+    <div className="content-page">
+      <div className="page-header">
         <div>
-          <h1>Agro Shop Products & Inventory</h1>
-          <p>Manage agricultural inventory and product listings across local Seva Kendras</p>
+          <h1>Shop Products & Listings</h1>
+          <p>Manage agricultural inventory listed by local shop owners across regions</p>
         </div>
-        <button className="btn btn-ghost" onClick={fetchProducts}>
+        <button className="btn btn-secondary" onClick={fetchProducts}>
           <RefreshCw size={16} /> Refresh
         </button>
       </div>
 
-      <div className="card">
-        <div className="tbl-toolbar">
-          <form onSubmit={(e) => e.preventDefault()} style={{ flex: 1, minWidth: '240px' }}>
-            <div className="search-wrap">
-              <span className="search-ico"><Search size={16} /></span>
-              <input
-                type="text"
-                className="inp with-icon"
-                placeholder="Search product, store name, brand or city..."
-                value={search}
-                onChange={e => setSearch(e.target.value)}
-              />
-            </div>
-          </form>
-
-          <select
-            className="sel"
-            value={categoryFilter}
-            onChange={e => setCategoryFilter(e.target.value)}
-          >
-            <option value="">All Categories</option>
-            {categories.map(cat => (
-              <option key={cat} value={cat}>{cat}</option>
-            ))}
-          </select>
+      <div className="filter-bar" style={{ display: 'flex', gap: '12px', marginBottom: '20px', flexWrap: 'wrap' }}>
+        <div className="search-box" style={{ flex: 1, minWidth: '240px', position: 'relative' }}>
+          <Search size={16} className="search-icon" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+          <input
+            type="text"
+            className="input-field"
+            placeholder="Search product, shop name, brand or city..."
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            style={{ paddingLeft: '36px', width: '100%' }}
+          />
         </div>
 
+        <select
+          className="select-field"
+          value={categoryFilter}
+          onChange={e => setCategoryFilter(e.target.value)}
+          style={{ width: '200px' }}
+        >
+          <option value="">All Categories</option>
+          {categories.map(cat => (
+            <option key={cat} value={cat}>{cat}</option>
+          ))}
+        </select>
+      </div>
+
+      <div className="card">
         {loading ? (
-          <div className="spin-wrap"><div className="spinner" /><span>Loading shop products...</span></div>
+          <div className="loading-container" style={{ padding: '40px', textAlign: 'center' }}>
+            <div className="spinner" />
+            <p style={{ marginTop: '12px', color: 'var(--text-muted)' }}>Loading products...</p>
+          </div>
         ) : filteredProducts.length === 0 ? (
-          <div className="empty">
-            <ShoppingBag size={48} />
+          <div className="empty-state" style={{ padding: '40px', textAlign: 'center' }}>
+            <ShoppingBag size={48} color="var(--text-muted)" style={{ marginBottom: '12px' }} />
             <h3>No Shop Products Found</h3>
-            <p>No product listings match your search or category filter.</p>
+            <p style={{ color: 'var(--text-muted)' }}>No products match your search or filter criteria.</p>
           </div>
         ) : (
-          <div className="tbl-wrap">
-            <table>
+          <div className="table-responsive">
+            <table className="data-table">
               <thead>
                 <tr>
-                  <th>PRODUCT</th>
-                  <th>CATEGORY / BRAND</th>
-                  <th>AGRO SEVA KENDRA</th>
-                  <th>LOCATION</th>
-                  <th>PRICE & UNIT</th>
-                  <th>STOCK</th>
-                  <th>STATUS</th>
-                  <th style={{ textAlign: 'center' }}>ACTION</th>
+                  <th>Product</th>
+                  <th>Category / Brand</th>
+                  <th>Shop Seva Kendra</th>
+                  <th>Location</th>
+                  <th>Price & Unit</th>
+                  <th>Stock</th>
+                  <th>Status</th>
+                  <th>Action</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredProducts.map((prod) => (
                   <tr key={prod.id}>
                     <td>
-                      <div style={{ fontWeight: 600, color: 'var(--text-1)' }}>{prod.name}</div>
+                      <div style={{ fontWeight: 600 }}>{prod.name}</div>
                       <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>ID: #{prod.id}</div>
                     </td>
                     <td>
-                      <div><Tag size={12} style={{ display: 'inline', marginRight: 4, color: 'var(--primary)' }} />{prod.category}</div>
+                      <div><Tag size={12} inline style={{ marginRight: 4 }} />{prod.category}</div>
                       <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{prod.company}</div>
                     </td>
                     <td>
-                      <div style={{ fontWeight: 600 }}><Store size={14} style={{ display: 'inline', marginRight: 4, color: 'var(--blue)' }} />{prod.shop_name || prod.owner_name}</div>
+                      <div style={{ fontWeight: 500 }}><Store size={14} inline style={{ marginRight: 4 }} />{prod.shop_name || prod.owner_name}</div>
                       <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Owner: {prod.owner_name}</div>
                     </td>
                     <td>
-                      <div style={{ color: 'var(--text-2)' }}><MapPin size={12} style={{ display: 'inline', marginRight: 4, color: 'var(--text-muted)' }} />{prod.shop_location || 'Maharashtra'}</div>
+                      <div><MapPin size={12} inline style={{ marginRight: 4 }} />{prod.shop_location || 'N/A'}</div>
                     </td>
                     <td>
-                      <div style={{ fontWeight: 700, color: 'var(--primary-light)' }}>₹{parseFloat(prod.price).toFixed(2)}</div>
+                      <div style={{ fontWeight: 700, color: '#059669' }}>₹{parseFloat(prod.price).toFixed(2)}</div>
                       <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>per {prod.unit || 'pack'}</div>
                     </td>
                     <td>
-                      <span className={`badge ${prod.stock_quantity > 10 ? 'b-green' : 'b-amber'}`}>
-                        {prod.stock_quantity} in stock
+                      <span className={`badge ${prod.stock_quantity > 10 ? 'badge-success' : 'badge-warning'}`}>
+                        {prod.stock_quantity} available
                       </span>
                     </td>
                     <td>
-                      <span className="badge b-blue">{prod.status}</span>
+                      <span className="badge badge-info">{prod.status}</span>
                     </td>
-                    <td style={{ textAlign: 'center' }}>
+                    <td>
                       <button
-                        className="btn btn-sm btn-danger btn-icon"
+                        className="btn btn-sm btn-danger"
                         onClick={() => handleDelete(prod.id)}
-                        title="Remove Product Listing"
+                        title="Delete Product Listing"
                       >
-                        <Trash2 size={15} />
+                        <Trash2 size={14} /> Remove
                       </button>
                     </td>
                   </tr>
@@ -163,6 +166,6 @@ export default function ShopProducts() {
           </div>
         )}
       </div>
-    </>
+    </div>
   );
 }

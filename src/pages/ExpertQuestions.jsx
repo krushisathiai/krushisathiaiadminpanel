@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { MessageSquare, Send, X, CheckCircle, Clock, Trash2 } from 'lucide-react';
+import { MessageSquare, Send, X, CheckCircle, Clock, Filter, Square, ChevronDown, CheckSquare, Trash2 } from 'lucide-react';
 import { getExpertQuestions, answerQuestion, deleteExpertQuestion } from '../api/adminApi';
 import { useToast } from '../context/ToastContext';
 
@@ -30,17 +30,17 @@ export default function ExpertQuestions() {
     if (!answer.trim()) return;
     setSaving(true);
     try {
-      await answerQuestion(selected.id, { answer, answered_by: 'Dr. Patil (Agri Specialist)' });
+      await answerQuestion(selected.id, { answer, answered_by: 'Admin' });
       addToast('Question answered!', 'ok');
       setSelected(null);
       setAnswer('');
       fetchQs();
-    } catch (e) { addToast(e.response?.data?.message || 'Failed to submit answer', 'err'); }
+    } catch (e) { addToast(e.response?.data?.message || 'Failed', 'err'); }
     finally { setSaving(false); }
   };
 
   const handleDeleteQuestion = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this farmer question?')) return;
+    if (!window.confirm('Are you sure you want to delete this question?')) return;
     try {
       const res = await deleteExpertQuestion(id);
       if (res.data.success) {
@@ -57,102 +57,106 @@ export default function ExpertQuestions() {
 
   const avatarColors = ['#10b981', '#f59e0b', '#8b5cf6', '#3b82f6', '#14b8a6'];
 
-  const handleTemplate = (tmplText) => {
-    setAnswer(prev => prev ? `${prev}\n\n${tmplText}` : tmplText);
-  };
-
   return (
     <>
       <div className="responsive-page-head">
         <div>
-          <h1>Community Expert Q&A</h1>
-          <p>Provide expert advisory answers for crop problems submitted by farmers ({pg.total_questions || 0} questions total)</p>
+          <h1 style={{ fontSize: '28px', color: '#111827', margin: 0 }}>Expert Q&A</h1>
+          <p style={{ color: '#6b7280', fontSize: '14px', marginTop: '4px' }}>{pg.total_questions || 0} total questions</p>
         </div>
       </div>
 
       <div className={`responsive-expert-grid ${selected ? 'selected' : 'unselected'}`}>
-        {/* Table / Questions List */}
-        <div className="card">
-          <div className="tbl-toolbar">
-            <div style={{ flex: 1, color: 'var(--text-1)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <MessageSquare size={18} color="var(--primary)" /> Farmer Questions
+        {/* Table */}
+        <div className="card" style={{ background: '#fff', borderRadius: '12px', border: '1px solid #e5e7eb', boxShadow: '0 1px 3px rgba(0,0,0,0.05)', overflow: 'hidden' }}>
+          
+          <div className="tbl-toolbar" style={{ padding: '16px 20px', borderBottom: '1px solid #e5e7eb', display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'center', background: '#fff' }}>
+            <div style={{ flex: 1, color: '#111827', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <MessageSquare size={18} color="#059669" /> Farmer Questions
             </div>
             
-            <select
-              className="sel"
-              value={status}
-              onChange={e => { setStatus(e.target.value); setPage(1); }}
-            >
-              <option value="">All Questions</option>
-              <option value="pending">Pending Reply</option>
-              <option value="answered">Answered</option>
-            </select>
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <button
+                onClick={() => { setStatus(''); setPage(1); }}
+                style={{ padding: '8px 16px', borderRadius: '8px', border: '1px solid #d1d5db', background: status === '' ? '#f3f4f6' : '#fff', color: '#374151', fontSize: '13px', fontWeight: 500, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}
+              >
+                <Filter size={14} /> All
+              </button>
+              <button
+                onClick={() => { setStatus('pending'); setPage(1); }}
+                style={{ padding: '8px 16px', borderRadius: '8px', border: '1px solid #fde68a', background: status === 'pending' ? '#fffbeb' : '#fff', color: status === 'pending' ? '#d97706' : '#374151', fontSize: '13px', fontWeight: 500, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}
+              >
+                <Clock size={14} /> Pending
+              </button>
+              <button
+                onClick={() => { setStatus('answered'); setPage(1); }}
+                style={{ padding: '8px 16px', borderRadius: '8px', border: '1px solid #a7f3d0', background: status === 'answered' ? '#ecfdf5' : '#fff', color: status === 'answered' ? '#059669' : '#374151', fontSize: '13px', fontWeight: 500, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}
+              >
+                <CheckCircle size={14} /> Answered
+              </button>
+            </div>
           </div>
 
           {loading ? (
-            <div className="spin-wrap"><div className="spinner" /><span>Loading questions...</span></div>
+            <div className="spin-wrap" style={{ padding: '40px', textAlign: 'center' }}><div className="spinner" style={{ margin: '0 auto' }} /></div>
           ) : questions.length === 0 ? (
-            <div className="empty">
-              <MessageSquare size={48} />
-              <h3>No Questions Found</h3>
-              <p>No questions match the filter criteria.</p>
+            <div className="empty" style={{ padding: '60px 20px', textAlign: 'center', color: '#6b7280' }}>
+              <MessageSquare size={48} style={{ margin: '0 auto 16px', opacity: 0.5 }} />
+              <h3>No Questions</h3>
+              <p>{status === 'pending' ? 'No pending questions' : status === 'answered' ? 'All answered!' : 'No questions yet'}</p>
             </div>
           ) : (
-            <div className="tbl-wrap">
-              <table>
+            <div className="tbl-wrap" style={{ overflowX: 'auto' }}>
+              <table style={{ width: '100%', minWidth: '700px', borderCollapse: 'collapse' }}>
                 <thead>
-                  <tr>
-                    <th>FARMER</th>
-                    <th>QUESTION</th>
-                    <th>STATUS</th>
-                    <th>DATE</th>
-                    <th style={{ textAlign: 'center' }}>ACTIONS</th>
+                  <tr style={{ borderBottom: '1px solid #e5e7eb', background: '#fff' }}>
+                    <th style={{ padding: '16px', color: '#6b7280', fontSize: '12px', fontWeight: 600, width: '40px', textAlign: 'center' }}><Square size={16} color="#d1d5db" /></th>
+                    <th style={{ padding: '16px', color: '#6b7280', fontSize: '12px', fontWeight: 600, width: '40px' }}>#</th>
+                    <th style={{ padding: '16px', color: '#6b7280', fontSize: '12px', fontWeight: 600, textAlign: 'left' }}>FARMER</th>
+                    <th style={{ padding: '16px', color: '#6b7280', fontSize: '12px', fontWeight: 600, textAlign: 'left' }}>QUESTION</th>
+                    <th style={{ padding: '16px', color: '#6b7280', fontSize: '12px', fontWeight: 600, textAlign: 'left' }}>STATUS</th>
+                    <th style={{ padding: '16px', color: '#6b7280', fontSize: '12px', fontWeight: 600, textAlign: 'left' }}>ASKED</th>
+                    <th style={{ padding: '16px', color: '#6b7280', fontSize: '12px', fontWeight: 600, textAlign: 'center' }}>ACTION</th>
                   </tr>
                 </thead>
                 <tbody>
                   {questions.map((q, i) => {
-                    const initials = q.user_name?.substring(0,1).toUpperCase() || 'F';
+                    const num = (page - 1) * 10 + i + 1;
+                    const initials = q.user_name?.substring(0,1).toUpperCase() || 'U';
                     const avatarColor = avatarColors[i % avatarColors.length];
                     const isSelected = selected?.id === q.id;
-
+                    
                     return (
-                      <tr 
-                        key={q.id}
-                        onClick={() => { setSelected(q); setAnswer(q.answer || ''); }}
-                        style={{ cursor: 'pointer', background: isSelected ? 'rgba(34, 197, 94, 0.08)' : undefined }}
-                      >
-                        <td>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                            <div className="avatar" style={{ background: avatarColor }}>
+                      <tr key={q.id} style={{ borderBottom: '1px solid #f3f4f6', background: isSelected ? '#f8fafc' : '#fff', cursor: 'pointer', transition: 'background 0.2s' }} onClick={() => setSelected(q)} onMouseEnter={e => !isSelected && (e.currentTarget.style.background = '#f9fafb')} onMouseLeave={e => !isSelected && (e.currentTarget.style.background = '#fff')}>
+                        <td style={{ padding: '16px', textAlign: 'center' }}><Square size={16} color="#d1d5db" /></td>
+                        <td style={{ padding: '16px', color: '#6b7280', fontSize: '14px', fontWeight: 500 }}>{num}</td>
+                        <td style={{ padding: '16px' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                            <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: avatarColor, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 600, fontSize: '12px' }}>
                               {initials}
                             </div>
-                            <div>
-                              <div style={{ fontWeight: 600, color: 'var(--text-1)' }}>{q.user_name || 'Farmer'}</div>
-                              <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{q.user_mobile || '—'}</div>
-                            </div>
+                            <div style={{ color: '#111827', fontWeight: 500, fontSize: '14px' }}>{q.user_name || 'Unknown'}</div>
                           </div>
                         </td>
-                        <td style={{ color: 'var(--text-2)', maxWidth: '280px' }}>
-                          <div style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-                            {q.question}
-                          </div>
+                        <td style={{ padding: '16px', color: '#4b5563', fontSize: '13px', maxWidth: '250px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                          {q.question}
                         </td>
-                        <td>
+                        <td style={{ padding: '16px' }}>
                           {!q.answer ? (
-                            <span className="badge b-amber"><Clock size={12} /> Pending</span>
+                            <span style={{ color: '#d97706', background: '#fffbeb', border: '1px solid #fde68a', padding: '4px 12px', borderRadius: '16px', fontSize: '12px', fontWeight: 500 }}>Pending</span>
                           ) : (
-                            <span className="badge b-green"><CheckCircle size={12} /> Answered</span>
+                            <span style={{ color: '#059669', background: '#ecfdf5', border: '1px solid #a7f3d0', padding: '4px 12px', borderRadius: '16px', fontSize: '12px', fontWeight: 500 }}>Answered</span>
                           )}
                         </td>
-                        <td style={{ color: 'var(--text-muted)' }}>{fmtDate(q.created_at)}</td>
-                        <td style={{ textAlign: 'center' }}>
+                        <td style={{ padding: '16px', color: '#6b7280', fontSize: '13px' }}>{fmtDate(q.created_at)}</td>
+                        <td style={{ padding: '16px', textAlign: 'center' }}>
                           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-                            <button className={`btn btn-sm ${isSelected ? 'btn-primary' : 'btn-ghost'}`}>
+                            <button style={{ padding: '6px 12px', background: isSelected ? '#3b82f6' : '#f3f4f6', color: isSelected ? '#fff' : '#374151', border: 'none', borderRadius: '6px', fontSize: '12px', fontWeight: 500, cursor: 'pointer' }}>
                               {q.answer ? 'View' : 'Reply'}
                             </button>
                             <button
-                              className="btn btn-sm btn-danger btn-icon"
                               onClick={(e) => { e.stopPropagation(); handleDeleteQuestion(q.id); }}
+                              style={{ padding: '6px 8px', background: '#fef2f2', color: '#ef4444', border: 'none', borderRadius: '6px', cursor: 'pointer' }}
                               title="Delete Question"
                             >
                               <Trash2 size={14} />
@@ -169,14 +173,14 @@ export default function ExpertQuestions() {
 
           {/* Pagination */}
           {!loading && questions.length > 0 && pg.total_pages > 1 && (
-            <div className="tbl-footer">
-              <div className="pg-info">
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 20px', borderTop: '1px solid #e5e7eb', background: '#fff', flexWrap: 'wrap', gap: '16px' }}>
+              <div style={{ color: '#6b7280', fontSize: '14px' }}>
                 Page {pg.current_page} of {pg.total_pages}
               </div>
-              <div className="pagination">
-                <button className="pg-btn" onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}>{'<'}</button>
-                <button className="pg-btn active">{page}</button>
-                <button className="pg-btn" onClick={() => setPage(p => Math.min(pg.total_pages, p + 1))} disabled={page === pg.total_pages}>{'>'}</button>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #e5e7eb', background: '#fff', borderRadius: '6px', color: page === 1 ? '#d1d5db' : '#374151', cursor: page === 1 ? 'not-allowed' : 'pointer' }}>{'<'}</button>
+                <button style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', background: '#059669', color: '#fff', borderRadius: '6px', fontWeight: 500 }}>{page}</button>
+                <button onClick={() => setPage(p => Math.min(pg.total_pages, p + 1))} disabled={page === pg.total_pages} style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #e5e7eb', background: '#fff', borderRadius: '6px', color: page === pg.total_pages ? '#d1d5db' : '#374151', cursor: page === pg.total_pages ? 'not-allowed' : 'pointer' }}>{'>'}</button>
               </div>
             </div>
           )}
@@ -184,73 +188,58 @@ export default function ExpertQuestions() {
 
         {/* Reply Panel */}
         {selected && (
-          <div className="card" style={{ background: 'var(--bg-1)', position: 'sticky', top: '20px' }}>
-            <div className="card-head">
-              <div className="card-title">
-                <MessageSquare size={18} /> Reply Panel
-              </div>
-              <button className="btn btn-ghost btn-icon" onClick={() => setSelected(null)}>
-                <X size={16} />
-              </button>
+          <div style={{ background: '#fff', borderRadius: '12px', border: '1px solid #e5e7eb', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)', overflow: 'hidden', position: 'sticky', top: '24px' }}>
+            <div style={{ padding: '16px 20px', borderBottom: '1px solid #e5e7eb', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#f8fafc' }}>
+              <div style={{ fontWeight: 600, color: '#111827', fontSize: '15px' }}>{selected.answer ? 'View Answer' : 'Reply to Farmer'}</div>
+              <button onClick={() => { setSelected(null); setAnswer(''); }} style={{ background: 'none', border: 'none', color: '#9ca3af', cursor: 'pointer' }}><X size={18} /></button>
             </div>
-
-            <div className="card-body">
-              <div style={{ background: 'var(--bg-2)', border: '1px solid var(--border)', borderRadius: '12px', padding: '16px', marginBottom: '20px' }}>
-                <div style={{ fontSize: '11px', color: 'var(--primary-light)', fontWeight: 700, textTransform: 'uppercase', marginBottom: '6px' }}>
-                  Question from {selected.user_name} ({selected.user_mobile})
+            
+            <div style={{ padding: '20px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
+                <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: '#e0e7ff', color: '#4f46e5', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 600 }}>
+                  {selected.user_name?.[0]?.toUpperCase() || 'U'}
                 </div>
-                <div style={{ color: 'var(--text-1)', fontSize: '14px', lineHeight: 1.5 }}>
-                  "{selected.question}"
+                <div>
+                  <div style={{ color: '#111827', fontWeight: 600, fontSize: '14px' }}>{selected.user_name}</div>
+                  <div style={{ color: '#6b7280', fontSize: '12px' }}>{fmtDate(selected.created_at)}</div>
                 </div>
               </div>
+              
+              <div style={{ padding: '12px 16px', background: '#f3f4f6', borderRadius: '8px', color: '#374151', fontSize: '14px', lineHeight: '1.5', marginBottom: '24px', borderLeft: '4px solid #9ca3af' }}>
+                {selected.question}
+              </div>
 
-              {selected.answer && (
-                <div style={{ background: 'rgba(34, 197, 94, 0.06)', border: '1px solid var(--border)', borderRadius: '12px', padding: '14px', marginBottom: '20px' }}>
-                  <div style={{ fontSize: '11px', color: 'var(--primary)', fontWeight: 700, textTransform: 'uppercase', marginBottom: '4px' }}>
-                    Current Answer ({selected.answered_by || 'Admin'})
+              {selected.answer ? (
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
+                    <div style={{ width: '24px', height: '24px', borderRadius: '50%', background: '#10b981', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><CheckSquare size={12} /></div>
+                    <div style={{ color: '#059669', fontWeight: 600, fontSize: '13px' }}>Answered by {selected.answered_by}</div>
                   </div>
-                  <div style={{ color: 'var(--text-2)', fontSize: '13px', whiteSpace: 'pre-wrap' }}>
+                  <div style={{ padding: '12px 16px', background: '#ecfdf5', borderRadius: '8px', color: '#065f46', fontSize: '14px', lineHeight: '1.5', border: '1px solid #a7f3d0' }}>
                     {selected.answer}
                   </div>
                 </div>
-              )}
-
-              {/* Quick Template Buttons */}
-              <div style={{ marginBottom: '16px' }}>
-                <div className="form-label" style={{ marginBottom: '8px' }}>Quick Smart Advice Templates</div>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                  <button type="button" className="btn btn-sm btn-ghost" onClick={() => handleTemplate('• बुरशीजन्य रोगासाठी: Copper Oxychloride (२ ग्रॅम/लिटर) फवारणी करा.')}>
-                    🧪 Fungicide Advice
-                  </button>
-                  <button type="button" className="btn btn-sm btn-ghost" onClick={() => handleTemplate('• किडींच्या नियंत्रणासाठी: Imidacloprid (०.५ मि.ली./लिटर) स्प्रे करा.')}>
-                    🐛 Insecticide Advice
-                  </button>
-                  <button type="button" className="btn btn-sm btn-ghost" onClick={() => handleTemplate('• पिकाच्या वाढीसाठी: NPK 19:19:19 विद्राव्य खत पाण्यातून द्या.')}>
-                    🌱 NPK Fertigation
-                  </button>
-                </div>
-              </div>
-
-              <form onSubmit={handleAnswer}>
-                <div className="form-group" style={{ marginBottom: '16px' }}>
-                  <label className="form-label">Expert Advisory Answer</label>
+              ) : (
+                <form onSubmit={handleAnswer}>
+                  <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#374151', marginBottom: '8px' }}>Your Answer</label>
                   <textarea
-                    className="textarea"
-                    rows="6"
-                    placeholder="Type detailed agricultural guidance for farmer..."
+                    rows={5}
                     value={answer}
                     onChange={e => setAnswer(e.target.value)}
+                    placeholder="Type your expert advice here..."
+                    style={{ width: '100%', padding: '12px', border: '1px solid #d1d5db', borderRadius: '8px', fontSize: '14px', outline: 'none', resize: 'vertical', marginBottom: '16px', fontFamily: 'inherit' }}
                     required
                   />
-                </div>
-
-                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
-                  <button type="button" className="btn btn-ghost" onClick={() => setSelected(null)}>Cancel</button>
-                  <button type="submit" className="btn btn-primary" disabled={saving}>
-                    <Send size={15} /> {saving ? 'Sending...' : 'Submit Expert Reply'}
+                  <button 
+                    type="submit" 
+                    disabled={saving}
+                    style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '10px 16px', background: '#059669', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: 600, fontSize: '14px', cursor: 'pointer', opacity: saving ? 0.7 : 1 }}
+                  >
+                    <Send size={16} />
+                    {saving ? 'Sending...' : 'Send Answer'}
                   </button>
-                </div>
-              </form>
+                </form>
+              )}
             </div>
           </div>
         )}
