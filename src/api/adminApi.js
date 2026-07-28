@@ -23,7 +23,9 @@ api.interceptors.response.use(
     if (error.response?.status === 401) {
       localStorage.removeItem('admin_token');
       localStorage.removeItem('admin_info');
-      window.location.href = '/login';
+      if (window.location.pathname !== '/login') {
+        window.location.href = '/login';
+      }
     }
     return Promise.reject(error);
   }
@@ -31,7 +33,7 @@ api.interceptors.response.use(
 
 // ─── AUTH ─────────────────────────────────────────────────────────────────────
 export const adminLogin = (email, password) =>
-  api.post('/api/admin/login', { email, password });
+  api.post('/api/admin/login', { email: email.trim(), password: password.trim() });
 
 // ─── DASHBOARD ────────────────────────────────────────────────────────────────
 export const getDashboard = () => api.get('/api/admin/dashboard');
@@ -58,5 +60,14 @@ export const getDiseases = (params) => api.get('/api/diseases', { params });
 export const createDisease = (data) => api.post('/api/admin/diseases', data);
 export const updateDisease = (id, data) => api.put(`/api/admin/diseases/${id}`, data);
 export const deleteDisease = (id) => api.delete(`/api/admin/diseases/${id}`);
+
+// ─── UREA REQUESTS ────────────────────────────────────────────────────────────
+export const getUreaRequests = (params) => api.get('/api/admin/urea-requests', { params });
+export const updateUreaStatus = (id, status) => api.put(`/api/admin/urea-requests/${id}/status`, { status });
+export const deleteUreaRequest = (id) => api.delete(`/api/admin/urea-requests/${id}`);
+
+// ─── SHOP PRODUCTS ────────────────────────────────────────────────────────────
+export const getShopProducts = () => api.get('/api/admin/shop-products');
+export const deleteShopProduct = (id) => api.delete(`/api/admin/shop-products/${id}`);
 
 export default api;

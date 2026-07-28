@@ -172,8 +172,16 @@ export default function Login() {
             Continue with Google
           </button>
 
-          <div className="login-creds">
-            <div className="login-creds-title">Default Credentials</div>
+          <div
+            className="login-creds"
+            onClick={() => {
+              setEmail('admin@krushisathi.com');
+              setPassword('Admin@2024');
+            }}
+            style={{ cursor: 'pointer' }}
+            title="Click to auto-fill credentials"
+          >
+            <div className="login-creds-title">Default Credentials (Click to Auto-fill)</div>
             <div className="login-creds-row">
               <div className="login-cred-pill">
                 <User size={14} /> admin@krushisathi.com
