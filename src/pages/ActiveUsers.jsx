@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { 
   Search, Trash2, X, Plus, Download, 
-  MapPin, Phone, Leaf, Calendar, Eye, Edit, Filter, ChevronDown, CheckSquare, Square
+  MapPin, Phone, Leaf, Calendar, Eye, Edit, Filter, ChevronDown, CheckSquare, Square, Users
 } from 'lucide-react';
 import { FaUserCheck } from 'react-icons/fa';
 import { getActiveUsers, deleteUser, updateUserRole } from '../api/adminApi';
@@ -133,7 +133,7 @@ export default function ActiveUsers() {
           <div className="spin-wrap" style={{ padding: '40px', textAlign: 'center' }}><div className="spinner" style={{ margin: '0 auto' }} /></div>
         ) : users.length === 0 ? (
           <div className="empty" style={{ padding: '60px 20px', textAlign: 'center', color: '#6b7280' }}>
-            <UsersIcon size={48} style={{ margin: '0 auto 16px', opacity: 0.5 }} />
+            <Users size={48} style={{ margin: '0 auto 16px', opacity: 0.5 }} />
             <h3>No Users Found</h3>
             <p>{search ? `No results for "${search}"` : 'No users yet'}</p>
           </div>
@@ -157,7 +157,7 @@ export default function ActiveUsers() {
               </thead>
               <tbody>
                 {users.map((u, i) => {
-                  const num = (page - 1) * 10 + i + 1;
+                  const num = i + 1;
                   const status = u.is_verified ? 'Active' : 'Pending';
                   const scansCount = u.scan_count || 0;
                   const initials = u.full_name?.substring(0,1).toUpperCase() || 'U';
