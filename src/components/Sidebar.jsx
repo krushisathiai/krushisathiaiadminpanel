@@ -5,10 +5,12 @@ import {
   Shield, ChevronLeft, LogOut, Menu, X, ShoppingBag, Sprout
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { FaUserCheck } from 'react-icons/fa';
 
 const NAV = [
   { to: '/', icon: LayoutDashboard, label: 'Dashboard', tip: 'Dashboard' },
   { to: '/users', icon: Users, label: 'Users', tip: 'Users' },
+  { to: '/active-users', icon: FaUserCheck, label: 'Active Users', tip: 'Active Users' },
   { to: '/scans', icon: Leaf, label: 'Plant Scans', tip: 'Scans' },
   { to: '/diseases', icon: Leaf, label: 'Crop Diseases', tip: 'Diseases' },
   { to: '/fertilizers', icon: Sprout, label: 'Fertilizer Guide', tip: 'Fertilizers' },

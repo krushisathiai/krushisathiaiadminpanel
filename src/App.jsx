@@ -14,6 +14,7 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import Diseases from './pages/Diseases';
 import Fertilizers from './pages/Fertilizers';
 import ShopProducts from './pages/ShopProducts';
+import ActiveUsers from './pages/ActiveUsers';
 
 function ProtectedLayout() {
   const { admin, loading } = useAuth();
@@ -48,6 +49,7 @@ function ProtectedLayout() {
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/users" element={<Users />} />
+            <Route path="/active-users" element={<ActiveUsers />} />
             <Route path="/scans" element={<Scans />} />
             <Route path="/diseases" element={<Diseases />} />
             <Route path="/fertilizers" element={<Fertilizers />} />

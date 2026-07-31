@@ -40,6 +40,7 @@ export const getDashboard = () => api.get('/api/admin/dashboard');
 
 // ─── USERS ────────────────────────────────────────────────────────────────────
 export const getUsers = (params) => api.get('/api/admin/users', { params });
+export const getActiveUsers = () => api.get('/api/admin/active-users');
 export const updateUserRole = (id, role) => api.put(`/api/admin/users/${id}/role`, { role });
 export const deleteUser = (id) => api.delete(`/api/admin/users/${id}`);
 
