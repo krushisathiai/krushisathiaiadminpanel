@@ -56,8 +56,8 @@ export default function ShopProducts() {
   });
 
   return (
-    <div className="content-page">
-      <div className="page-header">
+    <>
+      <div className="page-head">
         <div>
           <h1>Shop Products & Listings</h1>
           <p>Manage agricultural inventory listed by local shop owners across regions</p>
@@ -67,47 +67,47 @@ export default function ShopProducts() {
         </button>
       </div>
 
-      <div className="filter-bar" style={{ display: 'flex', gap: '12px', marginBottom: '20px', flexWrap: 'wrap' }}>
-        <div className="search-box" style={{ flex: 1, minWidth: '240px', position: 'relative' }}>
-          <Search size={16} className="search-icon" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
-          <input
-            type="text"
-            className="input-field"
-            placeholder="Search product, shop name, brand or city..."
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            style={{ paddingLeft: '36px', width: '100%' }}
-          />
+      <div className="card">
+        {/* Search + Filter toolbar */}
+        <div className="tbl-toolbar">
+          <div className="search-wrap" style={{ flex: 1, minWidth: '240px' }}>
+            <span className="search-ico"><Search /></span>
+            <input
+              type="text"
+              className="inp with-icon"
+              placeholder="Search product, shop name, brand or city..."
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+            />
+          </div>
+
+          <select
+            className="sel"
+            value={categoryFilter}
+            onChange={e => setCategoryFilter(e.target.value)}
+            style={{ width: '200px' }}
+          >
+            <option value="">All Categories</option>
+            {categories.map(cat => (
+              <option key={cat} value={cat}>{cat}</option>
+            ))}
+          </select>
         </div>
 
-        <select
-          className="select-field"
-          value={categoryFilter}
-          onChange={e => setCategoryFilter(e.target.value)}
-          style={{ width: '200px' }}
-        >
-          <option value="">All Categories</option>
-          {categories.map(cat => (
-            <option key={cat} value={cat}>{cat}</option>
-          ))}
-        </select>
-      </div>
-
-      <div className="card">
         {loading ? (
-          <div className="loading-container" style={{ padding: '40px', textAlign: 'center' }}>
+          <div className="spin-wrap">
             <div className="spinner" />
             <p style={{ marginTop: '12px', color: 'var(--text-muted)' }}>Loading products...</p>
           </div>
         ) : filteredProducts.length === 0 ? (
-          <div className="empty-state" style={{ padding: '40px', textAlign: 'center' }}>
-            <ShoppingBag size={48} color="var(--text-muted)" style={{ marginBottom: '12px' }} />
+          <div className="empty">
+            <ShoppingBag size={48} />
             <h3>No Shop Products Found</h3>
-            <p style={{ color: 'var(--text-muted)' }}>No products match your search or filter criteria.</p>
+            <p>No products match your search or filter criteria.</p>
           </div>
         ) : (
-          <div className="table-responsive">
-            <table className="data-table">
+          <div className="tbl-wrap">
+            <table>
               <thead>
                 <tr>
                   <th>Product</th>
@@ -128,27 +128,27 @@ export default function ShopProducts() {
                       <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>ID: #{prod.id}</div>
                     </td>
                     <td>
-                      <div><Tag size={12} inline style={{ marginRight: 4 }} />{prod.category}</div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><Tag size={12} />{prod.category}</div>
                       <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{prod.company}</div>
                     </td>
                     <td>
-                      <div style={{ fontWeight: 500 }}><Store size={14} inline style={{ marginRight: 4 }} />{prod.shop_name || prod.owner_name}</div>
+                      <div style={{ fontWeight: 500, display: 'flex', alignItems: 'center', gap: '4px' }}><Store size={14} />{prod.shop_name || prod.owner_name}</div>
                       <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Owner: {prod.owner_name}</div>
                     </td>
                     <td>
-                      <div><MapPin size={12} inline style={{ marginRight: 4 }} />{prod.shop_location || 'N/A'}</div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><MapPin size={12} />{prod.shop_location || 'N/A'}</div>
                     </td>
                     <td>
                       <div style={{ fontWeight: 700, color: '#059669' }}>₹{parseFloat(prod.price).toFixed(2)}</div>
                       <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>per {prod.unit || 'pack'}</div>
                     </td>
                     <td>
-                      <span className={`badge ${prod.stock_quantity > 10 ? 'badge-success' : 'badge-warning'}`}>
+                      <span className={`badge ${prod.stock_quantity > 10 ? 'b-green' : 'b-amber'}`}>
                         {prod.stock_quantity} available
                       </span>
                     </td>
                     <td>
-                      <span className="badge badge-info">{prod.status}</span>
+                      <span className="badge b-blue">{prod.status}</span>
                     </td>
                     <td>
                       <button
@@ -166,6 +166,6 @@ export default function ShopProducts() {
           </div>
         )}
       </div>
-    </div>
+    </>
   );
 }

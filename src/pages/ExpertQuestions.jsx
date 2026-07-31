@@ -59,18 +59,17 @@ export default function ExpertQuestions() {
 
   return (
     <>
-      <div className="responsive-page-head">
+      <div className="page-head">
         <div>
-          <h1 style={{ fontSize: '28px', color: '#111827', margin: 0 }}>Expert Q&A</h1>
-          <p style={{ color: '#6b7280', fontSize: '14px', marginTop: '4px' }}>{pg.total_questions || 0} total questions</p>
+          <h1>Expert Q&A</h1>
+          <p>{pg.total_questions || 0} total questions</p>
         </div>
       </div>
 
       <div className={`responsive-expert-grid ${selected ? 'selected' : 'unselected'}`}>
         {/* Table */}
-        <div className="card" style={{ background: '#fff', borderRadius: '12px', border: '1px solid #e5e7eb', boxShadow: '0 1px 3px rgba(0,0,0,0.05)', overflow: 'hidden' }}>
-          
-          <div className="tbl-toolbar" style={{ padding: '16px 20px', borderBottom: '1px solid #e5e7eb', display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'center', background: '#fff' }}>
+        <div className="card">
+          <div className="tbl-toolbar">
             <div style={{ flex: 1, color: '#111827', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '8px' }}>
               <MessageSquare size={18} color="#059669" /> Farmer Questions
             </div>
@@ -78,19 +77,21 @@ export default function ExpertQuestions() {
             <div style={{ display: 'flex', gap: '8px' }}>
               <button
                 onClick={() => { setStatus(''); setPage(1); }}
-                style={{ padding: '8px 16px', borderRadius: '8px', border: '1px solid #d1d5db', background: status === '' ? '#f3f4f6' : '#fff', color: '#374151', fontSize: '13px', fontWeight: 500, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}
+                className={`btn btn-sm ${status === '' ? 'btn-secondary' : 'btn-ghost'}`}
               >
                 <Filter size={14} /> All
               </button>
               <button
                 onClick={() => { setStatus('pending'); setPage(1); }}
-                style={{ padding: '8px 16px', borderRadius: '8px', border: '1px solid #fde68a', background: status === 'pending' ? '#fffbeb' : '#fff', color: status === 'pending' ? '#d97706' : '#374151', fontSize: '13px', fontWeight: 500, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}
+                className={`btn btn-sm ${status === 'pending' ? 'btn-ghost' : 'btn-ghost'}`}
+                style={status === 'pending' ? { background: '#fffbeb', color: '#d97706', borderColor: '#fde68a' } : {}}
               >
                 <Clock size={14} /> Pending
               </button>
               <button
                 onClick={() => { setStatus('answered'); setPage(1); }}
-                style={{ padding: '8px 16px', borderRadius: '8px', border: '1px solid #a7f3d0', background: status === 'answered' ? '#ecfdf5' : '#fff', color: status === 'answered' ? '#059669' : '#374151', fontSize: '13px', fontWeight: 500, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}
+                className={`btn btn-sm ${status === 'answered' ? 'btn-ghost' : 'btn-ghost'}`}
+                style={status === 'answered' ? { background: '#ecfdf5', color: '#059669', borderColor: '#a7f3d0' } : {}}
               >
                 <CheckCircle size={14} /> Answered
               </button>
@@ -98,25 +99,27 @@ export default function ExpertQuestions() {
           </div>
 
           {loading ? (
-            <div className="spin-wrap" style={{ padding: '40px', textAlign: 'center' }}><div className="spinner" style={{ margin: '0 auto' }} /></div>
+            <div className="spin-wrap">
+              <div className="spinner" />
+            </div>
           ) : questions.length === 0 ? (
-            <div className="empty" style={{ padding: '60px 20px', textAlign: 'center', color: '#6b7280' }}>
-              <MessageSquare size={48} style={{ margin: '0 auto 16px', opacity: 0.5 }} />
+            <div className="empty">
+              <MessageSquare size={48} />
               <h3>No Questions</h3>
               <p>{status === 'pending' ? 'No pending questions' : status === 'answered' ? 'All answered!' : 'No questions yet'}</p>
             </div>
           ) : (
-            <div className="tbl-wrap" style={{ overflowX: 'auto' }}>
-              <table style={{ width: '100%', minWidth: '700px', borderCollapse: 'collapse' }}>
+            <div className="tbl-wrap">
+              <table>
                 <thead>
-                  <tr style={{ borderBottom: '1px solid #e5e7eb', background: '#fff' }}>
-                    <th style={{ padding: '16px', color: '#6b7280', fontSize: '12px', fontWeight: 600, width: '40px', textAlign: 'center' }}><Square size={16} color="#d1d5db" /></th>
-                    <th style={{ padding: '16px', color: '#6b7280', fontSize: '12px', fontWeight: 600, width: '40px' }}>#</th>
-                    <th style={{ padding: '16px', color: '#6b7280', fontSize: '12px', fontWeight: 600, textAlign: 'left' }}>FARMER</th>
-                    <th style={{ padding: '16px', color: '#6b7280', fontSize: '12px', fontWeight: 600, textAlign: 'left' }}>QUESTION</th>
-                    <th style={{ padding: '16px', color: '#6b7280', fontSize: '12px', fontWeight: 600, textAlign: 'left' }}>STATUS</th>
-                    <th style={{ padding: '16px', color: '#6b7280', fontSize: '12px', fontWeight: 600, textAlign: 'left' }}>ASKED</th>
-                    <th style={{ padding: '16px', color: '#6b7280', fontSize: '12px', fontWeight: 600, textAlign: 'center' }}>ACTION</th>
+                  <tr>
+                    <th style={{ width: '40px', textAlign: 'center' }}><Square size={16} color="#d1d5db" /></th>
+                    <th style={{ width: '40px' }}>#</th>
+                    <th>FARMER</th>
+                    <th>QUESTION</th>
+                    <th>STATUS</th>
+                    <th>ASKED</th>
+                    <th style={{ textAlign: 'center' }}>ACTION</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -127,10 +130,10 @@ export default function ExpertQuestions() {
                     const isSelected = selected?.id === q.id;
                     
                     return (
-                      <tr key={q.id} style={{ borderBottom: '1px solid #f3f4f6', background: isSelected ? '#f8fafc' : '#fff', cursor: 'pointer', transition: 'background 0.2s' }} onClick={() => setSelected(q)} onMouseEnter={e => !isSelected && (e.currentTarget.style.background = '#f9fafb')} onMouseLeave={e => !isSelected && (e.currentTarget.style.background = '#fff')}>
-                        <td style={{ padding: '16px', textAlign: 'center' }}><Square size={16} color="#d1d5db" /></td>
-                        <td style={{ padding: '16px', color: '#6b7280', fontSize: '14px', fontWeight: 500 }}>{num}</td>
-                        <td style={{ padding: '16px' }}>
+                      <tr key={q.id} className={isSelected ? 'selected-row' : ''} onClick={() => setSelected(q)} style={{ cursor: 'pointer', background: isSelected ? 'var(--primary-pale)' : '' }}>
+                        <td style={{ textAlign: 'center' }}><Square size={16} color="#d1d5db" /></td>
+                        <td style={{ color: 'var(--text-muted)', fontSize: '14px', fontWeight: 500 }}>{num}</td>
+                        <td>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                             <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: avatarColor, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 600, fontSize: '12px' }}>
                               {initials}
@@ -138,18 +141,18 @@ export default function ExpertQuestions() {
                             <div style={{ color: '#111827', fontWeight: 500, fontSize: '14px' }}>{q.user_name || 'Unknown'}</div>
                           </div>
                         </td>
-                        <td style={{ padding: '16px', color: '#4b5563', fontSize: '13px', maxWidth: '250px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                        <td style={{ color: 'var(--text-sub)', fontSize: '13px', maxWidth: '250px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                           {q.question}
                         </td>
-                        <td style={{ padding: '16px' }}>
+                        <td>
                           {!q.answer ? (
-                            <span style={{ color: '#d97706', background: '#fffbeb', border: '1px solid #fde68a', padding: '4px 12px', borderRadius: '16px', fontSize: '12px', fontWeight: 500 }}>Pending</span>
+                            <span className="badge b-amber">Pending</span>
                           ) : (
-                            <span style={{ color: '#059669', background: '#ecfdf5', border: '1px solid #a7f3d0', padding: '4px 12px', borderRadius: '16px', fontSize: '12px', fontWeight: 500 }}>Answered</span>
+                            <span className="badge b-green">Answered</span>
                           )}
                         </td>
-                        <td style={{ padding: '16px', color: '#6b7280', fontSize: '13px' }}>{fmtDate(q.created_at)}</td>
-                        <td style={{ padding: '16px', textAlign: 'center' }}>
+                        <td style={{ color: 'var(--text-muted)', fontSize: '13px' }}>{fmtDate(q.created_at)}</td>
+                        <td>
                           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
                             <button style={{ padding: '6px 12px', background: isSelected ? '#3b82f6' : '#f3f4f6', color: isSelected ? '#fff' : '#374151', border: 'none', borderRadius: '6px', fontSize: '12px', fontWeight: 500, cursor: 'pointer' }}>
                               {q.answer ? 'View' : 'Reply'}
@@ -173,14 +176,26 @@ export default function ExpertQuestions() {
 
           {/* Pagination */}
           {!loading && questions.length > 0 && pg.total_pages > 1 && (
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 20px', borderTop: '1px solid #e5e7eb', background: '#fff', flexWrap: 'wrap', gap: '16px' }}>
-              <div style={{ color: '#6b7280', fontSize: '14px' }}>
+            <div className="tbl-footer">
+              <div className="pg-info">
                 Page {pg.current_page} of {pg.total_pages}
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #e5e7eb', background: '#fff', borderRadius: '6px', color: page === 1 ? '#d1d5db' : '#374151', cursor: page === 1 ? 'not-allowed' : 'pointer' }}>{'<'}</button>
-                <button style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', background: '#059669', color: '#fff', borderRadius: '6px', fontWeight: 500 }}>{page}</button>
-                <button onClick={() => setPage(p => Math.min(pg.total_pages, p + 1))} disabled={page === pg.total_pages} style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #e5e7eb', background: '#fff', borderRadius: '6px', color: page === pg.total_pages ? '#d1d5db' : '#374151', cursor: page === pg.total_pages ? 'not-allowed' : 'pointer' }}>{'>'}</button>
+              <div className="pagination">
+                <button 
+                  onClick={() => setPage(p => Math.max(1, p - 1))} 
+                  disabled={page === 1} 
+                  className="pg-btn"
+                >
+                  {'<'}
+                </button>
+                <button className="pg-btn active">{page}</button>
+                <button 
+                  onClick={() => setPage(p => Math.min(pg.total_pages, p + 1))} 
+                  disabled={page === pg.total_pages} 
+                  className="pg-btn"
+                >
+                  {'>'}
+                </button>
               </div>
             </div>
           )}
@@ -188,10 +203,10 @@ export default function ExpertQuestions() {
 
         {/* Reply Panel */}
         {selected && (
-          <div style={{ background: '#fff', borderRadius: '12px', border: '1px solid #e5e7eb', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)', overflow: 'hidden', position: 'sticky', top: '24px' }}>
-            <div style={{ padding: '16px 20px', borderBottom: '1px solid #e5e7eb', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#f8fafc' }}>
-              <div style={{ fontWeight: 600, color: '#111827', fontSize: '15px' }}>{selected.answer ? 'View Answer' : 'Reply to Farmer'}</div>
-              <button onClick={() => { setSelected(null); setAnswer(''); }} style={{ background: 'none', border: 'none', color: '#9ca3af', cursor: 'pointer' }}><X size={18} /></button>
+          <div className="card" style={{ position: 'sticky', top: '24px', padding: 0 }}>
+            <div className="modal-hd" style={{ padding: '16px 20px', background: 'var(--bg-2)', borderBottom: '1px solid var(--border)' }}>
+              <h2>{selected.answer ? 'View Answer' : 'Reply to Farmer'}</h2>
+              <button className="close-btn" onClick={() => { setSelected(null); setAnswer(''); }}><X size={18} /></button>
             </div>
             
             <div style={{ padding: '20px' }}>
@@ -221,19 +236,21 @@ export default function ExpertQuestions() {
                 </div>
               ) : (
                 <form onSubmit={handleAnswer}>
-                  <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#374151', marginBottom: '8px' }}>Your Answer</label>
+                  <label className="form-label" style={{ marginBottom: '8px' }}>Your Answer</label>
                   <textarea
                     rows={5}
                     value={answer}
                     onChange={e => setAnswer(e.target.value)}
                     placeholder="Type your expert advice here..."
-                    style={{ width: '100%', padding: '12px', border: '1px solid #d1d5db', borderRadius: '8px', fontSize: '14px', outline: 'none', resize: 'vertical', marginBottom: '16px', fontFamily: 'inherit' }}
+                    className="textarea"
+                    style={{ marginBottom: '16px' }}
                     required
                   />
                   <button 
                     type="submit" 
                     disabled={saving}
-                    style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '10px 16px', background: '#059669', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: 600, fontSize: '14px', cursor: 'pointer', opacity: saving ? 0.7 : 1 }}
+                    className="btn btn-primary"
+                    style={{ width: '100%' }}
                   >
                     <Send size={16} />
                     {saving ? 'Sending...' : 'Send Answer'}

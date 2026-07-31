@@ -114,11 +114,11 @@ export default function Fertilizers() {
   );
 
   return (
-    <div className="content-page">
-      <div className="responsive-page-head">
+    <>
+      <div className="page-head">
         <div>
-          <h1 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><Sprout color="var(--primary)" /> Fertilizer Guide Management</h1>
-          <p style={{ color: 'var(--text-muted)' }}>Configure crop-wise nutrient doses and soil fertilization schedules for farmers</p>
+          <h1><Sprout style={{ color: 'var(--primary)', marginRight: '8px', verticalAlign: 'middle' }} /> Fertilizer Guide Management</h1>
+          <p>Configure crop-wise nutrient doses and soil fertilization schedules for farmers</p>
         </div>
         <div style={{ display: 'flex', gap: '10px' }}>
           <button className="btn btn-secondary" onClick={fetchFertilizers}>
@@ -130,35 +130,34 @@ export default function Fertilizers() {
         </div>
       </div>
 
-      <div className="filter-bar" style={{ display: 'flex', gap: '12px', marginBottom: '20px' }}>
-        <div className="search-box" style={{ flex: 1, position: 'relative' }}>
-          <Search size={16} className="search-icon" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+      <div className="tbl-toolbar" style={{ display: 'flex', gap: '12px', marginBottom: '20px' }}>
+        <div className="search-wrap" style={{ flex: 1 }}>
+          <span className="search-ico"><Search /></span>
           <input
             type="text"
-            className="input-field"
+            className="inp with-icon"
             placeholder="Search by crop, fertilizer name or soil type..."
             value={search}
             onChange={e => setSearch(e.target.value)}
-            style={{ paddingLeft: '36px', width: '100%' }}
           />
         </div>
       </div>
 
       <div className="card">
         {loading ? (
-          <div className="loading-container" style={{ padding: '40px', textAlign: 'center' }}>
+          <div className="spin-wrap">
             <div className="spinner" />
-            <p style={{ marginTop: '12px', color: 'var(--text-muted)' }}>Loading fertilizer recommendations...</p>
+            <p>Loading fertilizer recommendations...</p>
           </div>
         ) : filteredFertilizers.length === 0 ? (
-          <div className="empty-state" style={{ padding: '40px', textAlign: 'center' }}>
-            <Sprout size={48} color="var(--text-muted)" style={{ marginBottom: '12px' }} />
+          <div className="empty">
+            <Sprout size={48} />
             <h3>No Fertilizer Recommendations Found</h3>
-            <p style={{ color: 'var(--text-muted)' }}>Add nutrient schedules to help farmers optimize yield.</p>
+            <p>Add nutrient schedules to help farmers optimize yield.</p>
           </div>
         ) : (
-          <div className="table-responsive">
-            <table className="data-table">
+          <div className="tbl-wrap">
+            <table>
               <thead>
                 <tr>
                   <th>Crop & Soil</th>
@@ -181,13 +180,13 @@ export default function Fertilizers() {
                       <div style={{ fontWeight: 600 }}>{item.fertilizer_name}</div>
                     </td>
                     <td>
-                      <span className="badge badge-info">{item.fertilizer_type || 'NPK'}</span>
+                      <span className="badge b-blue">{item.fertilizer_type || 'NPK'}</span>
                     </td>
                     <td>
                       <div style={{ fontWeight: 600, color: '#fbbf24' }}>{item.dose || 'As per soil test'}</div>
                     </td>
                     <td>
-                      <span className="badge badge-warning">{item.stage || 'General'}</span>
+                      <span className="badge b-amber">{item.stage || 'General'}</span>
                     </td>
                     <td>
                       <div style={{ fontSize: '12px', color: 'var(--text-sub)', maxWidth: '280px' }}>
@@ -196,10 +195,10 @@ export default function Fertilizers() {
                     </td>
                     <td>
                       <div style={{ display: 'flex', gap: '6px' }}>
-                        <button className="btn btn-sm btn-secondary" onClick={() => handleOpenEdit(item)}>
+                        <button className="btn btn-sm btn-secondary btn-icon" onClick={() => handleOpenEdit(item)}>
                           <Edit2 size={14} />
                         </button>
-                        <button className="btn btn-sm btn-danger" onClick={() => handleDelete(item.id)}>
+                        <button className="btn btn-sm btn-danger btn-icon" onClick={() => handleDelete(item.id)}>
                           <Trash2 size={14} />
                         </button>
                       </div>
@@ -214,22 +213,25 @@ export default function Fertilizers() {
 
       {/* Modal */}
       {showModal && (
-        <div className="modal-overlay" style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)', zIndex: 300, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
-          <div className="card" style={{ width: '100%', maxWidth: '560px', background: 'var(--bg-2)', border: '1px solid var(--border)', borderRadius: '16px', padding: '24px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-              <h3 style={{ fontSize: '18px', fontWeight: 600 }}>{editItem ? 'Edit Fertilizer Guide' : 'Add Fertilizer Guide'}</h3>
-              <button onClick={() => setShowModal(false)} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}><X size={20} /></button>
+        <div className="overlay" style={{ zIndex: 300 }}>
+          <div className="modal" style={{ maxWidth: '560px' }}>
+            <div className="modal-hd">
+              <h3>
+                <Sprout />
+                {editItem ? 'Edit Fertilizer Guide' : 'Add Fertilizer Guide'}
+              </h3>
+              <button className="modal-close" onClick={() => setShowModal(false)}><X size={14} /></button>
             </div>
 
-            <form onSubmit={handleSubmit}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
-                <div>
-                  <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, marginBottom: '6px' }}>Crop Name</label>
-                  <input type="text" className="input-field" placeholder="e.g. Tomato, Wheat" value={formData.crop_name} onChange={e => setFormData({ ...formData, crop_name: e.target.value })} required style={{ width: '100%' }} />
+            <form onSubmit={handleSubmit} className="modal-body" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                <div className="form-group">
+                  <label className="form-label">Crop Name</label>
+                  <input type="text" className="inp" placeholder="e.g. Tomato, Wheat" value={formData.crop_name} onChange={e => setFormData({ ...formData, crop_name: e.target.value })} required style={{ width: '100%' }} />
                 </div>
-                <div>
-                  <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, marginBottom: '6px' }}>Soil Type</label>
-                  <select className="select-field" value={formData.soil_type} onChange={e => setFormData({ ...formData, soil_type: e.target.value })} style={{ width: '100%' }}>
+                <div className="form-group">
+                  <label className="form-label">Soil Type</label>
+                  <select className="sel" value={formData.soil_type} onChange={e => setFormData({ ...formData, soil_type: e.target.value })} style={{ width: '100%' }}>
                     <option value="Black Soil">Black Soil (काळी जमीन)</option>
                     <option value="Red Soil">Red Soil (तांबडी जमीन)</option>
                     <option value="Alluvial Soil">Alluvial Soil (गाळाची जमीन)</option>
@@ -239,14 +241,14 @@ export default function Fertilizers() {
                 </div>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
-                <div>
-                  <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, marginBottom: '6px' }}>Fertilizer Name</label>
-                  <input type="text" className="input-field" placeholder="e.g. NPK 19:19:19, Urea" value={formData.fertilizer_name} onChange={e => setFormData({ ...formData, fertilizer_name: e.target.value })} required style={{ width: '100%' }} />
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                <div className="form-group">
+                  <label className="form-label">Fertilizer Name</label>
+                  <input type="text" className="inp" placeholder="e.g. NPK 19:19:19, Urea" value={formData.fertilizer_name} onChange={e => setFormData({ ...formData, fertilizer_name: e.target.value })} required style={{ width: '100%' }} />
                 </div>
-                <div>
-                  <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, marginBottom: '6px' }}>Type</label>
-                  <select className="select-field" value={formData.fertilizer_type} onChange={e => setFormData({ ...formData, fertilizer_type: e.target.value })} style={{ width: '100%' }}>
+                <div className="form-group">
+                  <label className="form-label">Type</label>
+                  <select className="sel" value={formData.fertilizer_type} onChange={e => setFormData({ ...formData, fertilizer_type: e.target.value })} style={{ width: '100%' }}>
                     <option value="NPK">NPK Complex</option>
                     <option value="Organic">Organic / Vermicompost</option>
                     <option value="Micronutrient">Micronutrient (Zinc/Boron)</option>
@@ -255,30 +257,30 @@ export default function Fertilizers() {
                 </div>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
-                <div>
-                  <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, marginBottom: '6px' }}>Dose / Acre</label>
-                  <input type="text" className="input-field" placeholder="e.g. 50 kg per acre" value={formData.dose} onChange={e => setFormData({ ...formData, dose: e.target.value })} style={{ width: '100%' }} />
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                <div className="form-group">
+                  <label className="form-label">Dose / Acre</label>
+                  <input type="text" className="inp" placeholder="e.g. 50 kg per acre" value={formData.dose} onChange={e => setFormData({ ...formData, dose: e.target.value })} style={{ width: '100%' }} />
                 </div>
-                <div>
-                  <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, marginBottom: '6px' }}>Crop Stage</label>
-                  <input type="text" className="input-field" placeholder="e.g. Vegetative, Flowering" value={formData.stage} onChange={e => setFormData({ ...formData, stage: e.target.value })} style={{ width: '100%' }} />
+                <div className="form-group">
+                  <label className="form-label">Crop Stage</label>
+                  <input type="text" className="inp" placeholder="e.g. Vegetative, Flowering" value={formData.stage} onChange={e => setFormData({ ...formData, stage: e.target.value })} style={{ width: '100%' }} />
                 </div>
               </div>
 
-              <div style={{ marginBottom: '16px' }}>
-                <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, marginBottom: '6px' }}>Notes / Instructions</label>
-                <textarea className="input-field" rows="3" placeholder="Application tips..." value={formData.notes} onChange={e => setFormData({ ...formData, notes: e.target.value })} style={{ width: '100%', resize: 'vertical' }} />
+              <div className="form-group">
+                <label className="form-label">Notes / Instructions</label>
+                <textarea className="textarea" placeholder="Application tips..." value={formData.notes} onChange={e => setFormData({ ...formData, notes: e.target.value })} style={{ width: '100%' }} />
               </div>
 
-              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px' }}>
-                <button type="button" className="btn btn-secondary" onClick={() => setShowModal(false)}>Cancel</button>
+              <div className="modal-ft" style={{ marginTop: '8px' }}>
+                <button type="button" className="btn btn-ghost" onClick={() => setShowModal(false)}>Cancel</button>
                 <button type="submit" className="btn btn-primary">{editItem ? 'Update Recommendation' : 'Add Recommendation'}</button>
               </div>
             </form>
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }

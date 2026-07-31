@@ -56,6 +56,7 @@ function ProtectedLayout() {
             <Route path="/shop-products" element={<ShopProducts />} />
             <Route path="/alerts" element={<Alerts />} />
             <Route path="/expert-questions" element={<ExpertQuestions />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </div>
@@ -78,7 +79,6 @@ function App() {
         <ToastProvider>
           <Routes>
             <Route path="/login" element={<LoginGuard />} />
-            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/*" element={<ProtectedLayout />} />
           </Routes>
         </ToastProvider>

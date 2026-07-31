@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, Users, Leaf, Bell, MessageSquare,
-  Shield, ChevronLeft, LogOut, Menu, X, ShoppingBag, Sprout, Crown,
+  Shield, ChevronLeft, ChevronRight, LogOut, Menu, X, ShoppingBag, Sprout, Crown,
   Scan, Bug
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
@@ -70,7 +70,7 @@ export default function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobile
           onClick={() => setCollapsed(c => !c)}
           title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
         >
-          <ChevronLeft size={14} />
+          {collapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
         </button>
 
         {/* Nav */}
@@ -80,7 +80,7 @@ export default function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobile
             <NavLink
               key={to}
               to={to}
-              end={to === '/'}
+              end
               data-tip={tip}
               className={({ isActive }) => `sb-item ${isActive ? 'active' : ''}`}
               onClick={() => setMobileOpen(false)}

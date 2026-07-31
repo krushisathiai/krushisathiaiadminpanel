@@ -5,19 +5,19 @@ import { useToast } from '../context/ToastContext';
 import ConfirmModal from '../components/ConfirmModal';
 
 const TYPE_CFG = {
-  general:    { icon: Megaphone,  bg: '#f3f4f6', color: '#4b5563', label: 'General' },
-  disease:    { icon: Bug,        bg: '#fef2f2', color: '#dc2626', label: 'Disease' },
-  weather:    { icon: CloudRain,  bg: '#eff6ff', color: '#3b82f6', label: 'Weather' },
-  fertilizer: { icon: Sprout,     bg: '#ecfdf5', color: '#059669', label: 'Fertilizer' },
-  spray:      { icon: Droplets,   bg: '#eff6ff', color: '#3b82f6', label: 'Spray' },
-  reminder:   { icon: Clock,      bg: '#fffbeb', color: '#d97706', label: 'Reminder' },
+  general:    { icon: Megaphone,  cls: '', label: 'General' },
+  disease:    { icon: Bug,        cls: 'b-red', label: 'Disease' },
+  weather:    { icon: CloudRain,  cls: 'b-blue', label: 'Weather' },
+  fertilizer: { icon: Sprout,     cls: 'b-green', label: 'Fertilizer' },
+  spray:      { icon: Droplets,   cls: 'b-blue', label: 'Spray' },
+  reminder:   { icon: Clock,      cls: 'b-amber', label: 'Reminder' },
 };
 
 const TypeBadge = ({ type }) => {
-  const cfg = TYPE_CFG[type] || { icon: Info, bg: '#f3f4f6', color: '#6b7280', label: type };
+  const cfg = TYPE_CFG[type] || { icon: Info, cls: '', label: type };
   const Icon = cfg.icon;
   return (
-    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: cfg.bg, color: cfg.color, padding: '4px 10px', borderRadius: '12px', fontSize: '12px', fontWeight: 600 }}>
+    <span className={`badge ${cfg.cls}`} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
       <Icon size={12} /> {cfg.label}
     </span>
   );
@@ -72,41 +72,43 @@ export default function Alerts() {
 
   return (
     <>
-      <div className="responsive-page-head">
+      <div className="page-head">
         <div>
-          <h1 style={{ fontSize: '28px', color: '#111827', margin: 0 }}>Alerts</h1>
-          <p style={{ color: '#6b7280', fontSize: '14px', marginTop: '4px' }}>{pg.total_alerts || 0} alerts total</p>
+          <h1>Alerts</h1>
+          <p>{pg.total_alerts || 0} alerts total</p>
         </div>
         <button 
           onClick={() => setShowModal(true)}
-          style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 16px', borderRadius: '8px', background: '#059669', border: 'none', color: '#fff', fontWeight: 500, cursor: 'pointer' }}
+          className="btn btn-primary"
         >
           <Plus size={18} /> New Alert
         </button>
       </div>
 
-      <div className="card" style={{ background: '#fff', borderRadius: '12px', border: '1px solid #e5e7eb', boxShadow: '0 1px 3px rgba(0,0,0,0.05)', overflow: 'hidden' }}>
+      <div className="card">
         {loading ? (
-          <div className="spin-wrap" style={{ padding: '40px', textAlign: 'center' }}><div className="spinner" style={{ margin: '0 auto' }} /></div>
+          <div className="spin-wrap">
+            <div className="spinner" />
+          </div>
         ) : alerts.length === 0 ? (
-          <div className="empty" style={{ padding: '60px 20px', textAlign: 'center', color: '#6b7280' }}>
-            <Bell size={48} style={{ margin: '0 auto 16px', opacity: 0.5 }} />
+          <div className="empty">
+            <Bell size={48} />
             <h3>No Alerts Found</h3>
             <p>Create your first alert for farmers</p>
           </div>
         ) : (
-          <div className="tbl-wrap" style={{ overflowX: 'auto' }}>
-            <table style={{ width: '100%', minWidth: '900px', borderCollapse: 'collapse' }}>
+          <div className="tbl-wrap">
+            <table>
               <thead>
-                <tr style={{ borderBottom: '1px solid #e5e7eb', background: '#fff' }}>
-                  <th style={{ padding: '16px', color: '#6b7280', fontSize: '12px', fontWeight: 600, width: '40px', textAlign: 'center' }}><Square size={16} color="#d1d5db" /></th>
-                  <th style={{ padding: '16px', color: '#6b7280', fontSize: '12px', fontWeight: 600, width: '40px' }}>#</th>
-                  <th style={{ padding: '16px', color: '#6b7280', fontSize: '12px', fontWeight: 600, textAlign: 'left' }}>TYPE</th>
-                  <th style={{ padding: '16px', color: '#6b7280', fontSize: '12px', fontWeight: 600, textAlign: 'left' }}>TITLE</th>
-                  <th style={{ padding: '16px', color: '#6b7280', fontSize: '12px', fontWeight: 600, textAlign: 'left' }}>MESSAGE</th>
-                  <th style={{ padding: '16px', color: '#6b7280', fontSize: '12px', fontWeight: 600, textAlign: 'left' }}>STATUS</th>
-                  <th style={{ padding: '16px', color: '#6b7280', fontSize: '12px', fontWeight: 600, textAlign: 'left' }}>CREATED</th>
-                  <th style={{ padding: '16px', color: '#6b7280', fontSize: '12px', fontWeight: 600, textAlign: 'center' }}>ACTIONS</th>
+                <tr>
+                  <th style={{ width: '40px', textAlign: 'center' }}><Square size={16} color="#d1d5db" /></th>
+                  <th style={{ width: '40px' }}>#</th>
+                  <th>TYPE</th>
+                  <th>TITLE</th>
+                  <th>MESSAGE</th>
+                  <th>STATUS</th>
+                  <th>CREATED</th>
+                  <th style={{ textAlign: 'center' }}>ACTIONS</th>
                 </tr>
               </thead>
               <tbody>
@@ -114,21 +116,21 @@ export default function Alerts() {
                   const num = (page - 1) * 10 + i + 1;
                   const isScheduled = al.scheduled_at && new Date(al.scheduled_at) > new Date();
                   return (
-                    <tr key={al.id} style={{ borderBottom: '1px solid #f3f4f6', background: '#fff', transition: 'background 0.2s' }} onMouseEnter={e => e.currentTarget.style.background = '#f9fafb'} onMouseLeave={e => e.currentTarget.style.background = '#fff'}>
-                      <td style={{ padding: '16px', textAlign: 'center' }}><Square size={16} color="#d1d5db" /></td>
-                      <td style={{ padding: '16px', color: '#6b7280', fontSize: '14px', fontWeight: 500 }}>{num}</td>
-                      <td style={{ padding: '16px' }}><TypeBadge type={al.type} /></td>
-                      <td style={{ padding: '16px', color: '#111827', fontWeight: 600, fontSize: '14px' }}>{al.title}</td>
-                      <td style={{ padding: '16px', color: '#6b7280', fontSize: '13px', maxWidth: '300px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{al.message}</td>
-                      <td style={{ padding: '16px' }}>
+                    <tr key={al.id}>
+                      <td style={{ textAlign: 'center' }}><Square size={16} color="#d1d5db" /></td>
+                      <td>{num}</td>
+                      <td><TypeBadge type={al.type} /></td>
+                      <td style={{ fontWeight: 600 }}>{al.title}</td>
+                      <td style={{ color: 'var(--text-muted)', fontSize: '13px', maxWidth: '300px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{al.message}</td>
+                      <td>
                         {isScheduled ? (
-                          <span style={{ color: '#d97706', background: '#fffbeb', border: '1px solid #fde68a', padding: '4px 12px', borderRadius: '16px', fontSize: '12px', fontWeight: 500 }}>Scheduled</span>
+                          <span className="badge b-amber">Scheduled</span>
                         ) : (
-                          <span style={{ color: '#059669', background: '#ecfdf5', border: '1px solid #a7f3d0', padding: '4px 12px', borderRadius: '16px', fontSize: '12px', fontWeight: 500 }}>Sent</span>
+                          <span className="badge b-green">Sent</span>
                         )}
                       </td>
-                      <td style={{ padding: '16px', color: '#6b7280', fontSize: '13px' }}>{fmtDate(al.created_at)}</td>
-                      <td style={{ padding: '16px', textAlign: 'center' }}>
+                      <td style={{ color: 'var(--text-muted)', fontSize: '13px' }}>{fmtDate(al.created_at)}</td>
+                      <td>
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px' }}>
                           <button style={{ background: 'none', border: 'none', color: '#3b82f6', cursor: 'pointer', padding: 0 }} title="View">
                             <Eye size={16} />
@@ -149,54 +151,110 @@ export default function Alerts() {
             </table>
           </div>
         )}
+
+        {/* Pagination */}
+        {!loading && alerts.length > 0 && (
+          <div className="tbl-footer">
+            <div className="pg-info">
+              Showing {(page - 1) * 10 + 1} to {Math.min(page * 10, pg.total_alerts || alerts.length)} of {pg.total_alerts || alerts.length} alerts
+            </div>
+            
+            <div className="pagination">
+              <button 
+                onClick={() => setPage(p => Math.max(1, p - 1))} 
+                disabled={page === 1}
+                className="pg-btn"
+              >
+                {'<'}
+              </button>
+              
+              <button className="pg-btn active">
+                {page}
+              </button>
+              
+              {pg.total_pages > page && (
+                <button 
+                  onClick={() => setPage(p => p + 1)}
+                  className="pg-btn"
+                >
+                  {page + 1}
+                </button>
+              )}
+              
+              {pg.total_pages > page + 1 && (
+                <span style={{ color: '#9ca3af', margin: '0 4px' }}>...</span>
+              )}
+              
+              {pg.total_pages > page + 1 && (
+                <button 
+                  onClick={() => setPage(pg.total_pages)}
+                  className="pg-btn"
+                >
+                  {pg.total_pages}
+                </button>
+              )}
+
+              <button 
+                onClick={() => setPage(p => Math.min(pg.total_pages || 1, p + 1))}
+                disabled={!pg.total_pages || page === pg.total_pages}
+                className="pg-btn"
+              >
+                {'>'}
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
       {showModal && (
-        <div className="modal-overlay" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999 }}>
-          <div className="modal-content" style={{ background: '#fff', borderRadius: '12px', width: '100%', maxWidth: '500px', padding: '24px', position: 'relative' }}>
-            <button onClick={() => setShowModal(false)} style={{ position: 'absolute', top: '16px', right: '16px', background: 'none', border: 'none', cursor: 'pointer', color: '#9ca3af' }}>
-              <X size={20} />
-            </button>
-            <h2 style={{ fontSize: '20px', fontWeight: 600, color: '#111827', margin: '0 0 20px' }}>Create New Alert</h2>
+        <div className="overlay">
+          <div className="modal">
+            <div className="modal-hd">
+              <h2>Create New Alert</h2>
+              <button className="close-btn" onClick={() => setShowModal(false)}><X size={20} /></button>
+            </div>
             
-            <form onSubmit={handleCreate} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              <div>
-                <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#374151', marginBottom: '6px' }}>Alert Type</label>
-                <select 
-                  value={form.type} 
-                  onChange={e => setForm({...form, type: e.target.value})}
-                  style={{ width: '100%', padding: '10px 12px', border: '1px solid #d1d5db', borderRadius: '8px', fontSize: '14px', outline: 'none' }}
-                >
-                  {TYPES.map(t => <option key={t.val} value={t.val}>{t.label}</option>)}
-                </select>
+            <form onSubmit={handleCreate} className="modal-body">
+              <div className="form-group">
+                <label className="form-label">Alert Type</label>
+                <div className="sel-wrap">
+                  <select 
+                    value={form.type} 
+                    onChange={e => setForm({...form, type: e.target.value})}
+                    className="sel"
+                    style={{ width: '100%' }}
+                  >
+                    {TYPES.map(t => <option key={t.val} value={t.val}>{t.label}</option>)}
+                  </select>
+                </div>
               </div>
               
-              <div>
-                <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#374151', marginBottom: '6px' }}>Title</label>
+              <div className="form-group" style={{ marginTop: '12px' }}>
+                <label className="form-label">Title</label>
                 <input 
                   required 
                   value={form.title} 
                   onChange={e => setForm({...form, title: e.target.value})}
-                  style={{ width: '100%', padding: '10px 12px', border: '1px solid #d1d5db', borderRadius: '8px', fontSize: '14px', outline: 'none' }}
+                  className="inp"
                 />
               </div>
 
-              <div>
-                <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#374151', marginBottom: '6px' }}>Message</label>
+              <div className="form-group" style={{ marginTop: '12px' }}>
+                <label className="form-label">Message</label>
                 <textarea 
                   required 
                   rows={4}
                   value={form.message} 
                   onChange={e => setForm({...form, message: e.target.value})}
-                  style={{ width: '100%', padding: '10px 12px', border: '1px solid #d1d5db', borderRadius: '8px', fontSize: '14px', outline: 'none', resize: 'vertical' }}
+                  className="textarea"
                 />
               </div>
 
-              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '8px' }}>
-                <button type="button" onClick={() => setShowModal(false)} style={{ padding: '8px 16px', border: '1px solid #d1d5db', background: '#fff', borderRadius: '8px', color: '#374151', fontWeight: 500, cursor: 'pointer' }}>
+              <div className="modal-ft" style={{ marginTop: '20px' }}>
+                <button type="button" className="btn btn-ghost" onClick={() => setShowModal(false)}>
                   Cancel
                 </button>
-                <button type="submit" disabled={saving} style={{ padding: '8px 16px', border: 'none', background: '#059669', borderRadius: '8px', color: '#fff', fontWeight: 500, cursor: 'pointer', opacity: saving ? 0.7 : 1 }}>
+                <button type="submit" className="btn btn-primary" disabled={saving}>
                   {saving ? 'Creating...' : 'Send Alert'}
                 </button>
               </div>
