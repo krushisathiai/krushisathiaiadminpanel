@@ -5,12 +5,14 @@ import { useAuth } from '../context/AuthContext';
 const BREADCRUMBS = {
   '/': 'Dashboard',
   '/users': 'Users',
+  '/active-users': 'Active Users',
   '/scans': 'Plant Scans',
   '/diseases': 'Crop Diseases',
-  '/fertilizers': 'Fertilizer Guide Management',
+  '/fertilizers': 'Fertilizer Guide',
   '/shop-products': 'Shop Listings',
   '/alerts': 'Alerts',
   '/expert-questions': 'Expert Q&A',
+  '/premium': 'Premium',
   '/privacy-policy': 'Privacy Policy',
 };
 

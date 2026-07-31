@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, Users, Leaf, Bell, MessageSquare,
-  Shield, ChevronLeft, LogOut, Menu, X, ShoppingBag, Sprout, Crown
+  Shield, ChevronLeft, LogOut, Menu, X, ShoppingBag, Sprout, Crown,
+  Scan, Bug
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { FaUserCheck } from 'react-icons/fa';
@@ -11,8 +12,8 @@ const NAV = [
   { to: '/', icon: LayoutDashboard, label: 'Dashboard', tip: 'Dashboard' },
   { to: '/users', icon: Users, label: 'Users', tip: 'Users' },
   { to: '/active-users', icon: FaUserCheck, label: 'Active Users', tip: 'Active Users' },
-  { to: '/scans', icon: Leaf, label: 'Plant Scans', tip: 'Scans' },
-  { to: '/diseases', icon: Leaf, label: 'Crop Diseases', tip: 'Diseases' },
+  { to: '/scans', icon: Scan, label: 'Plant Scans', tip: 'Scans' },
+  { to: '/diseases', icon: Bug, label: 'Crop Diseases', tip: 'Diseases' },
   { to: '/fertilizers', icon: Sprout, label: 'Fertilizer Guide', tip: 'Fertilizers' },
   { to: '/shop-products', icon: ShoppingBag, label: 'Shop Listings', tip: 'Shop Products' },
   { to: '/alerts', icon: Bell, label: 'Alerts', tip: 'Alerts' },
@@ -55,7 +56,7 @@ export default function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobile
           {/* Mobile close */}
           <button
             onClick={() => setMobileOpen(false)}
-            style={{ marginLeft: 'auto', background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', padding: 4 }}
+            style={{ marginLeft: 'auto', background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer', padding: 4 }}
             className="sb-close-btn"
             id="sidebar-close-btn"
           >
